@@ -7,5 +7,3 @@ class Player:
         self.id = id_num
         self.money = money
         self.position = position
-
-        
