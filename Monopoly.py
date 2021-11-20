@@ -4,25 +4,36 @@ from propriete import *
 from player import *
 
 def read_properties(file):
+    nb_spaces: int
     list_properties=0
     return list_properties
 
+
 class Board:
-    def __init__(self):
-        #Plus complexe parce qu'il faut différencier toutes les ptn de cases sa mère
-        self._cases=[]
-        #Mettre le bon nom de fichier puis ne plus y toucher
-        properties=read_properties("Coucou")
-        self.cases.append("Depart")
-        for i in range(len(properties)):
-            pass
+    def __init__(self, debug: bool):
+        if debug:  # create a debug board with only 4 spaces
+            _cases = []
+            for k in range(5):
+                name = "Property_nb_" + str(k)
+                _cases.append(Property(name))
+            self.cases = _cases
+            self.nb_spaces = 5
+        else:
+            # Plus complexe parce qu'il faut différencier toutes les ptn de cases sa mère
+            self._cases = []
+            # Mettre le bon nom de fichier puis ne plus y toucher
+            properties = read_properties("Coucou")
+            self.cases.append("Depart")
+            for i in range(len(properties)):
+                pass
+
     ## Accesseur ##
     def cases(self):
         return self._cases
 
     ## Méthodes ##
 
-    def buy_property(self,player: Player):
+    def buy_property(self, player: Player):
         """Un joueur veut acheter une propriété. Aucun return mais fait des print et màj des données des propriétés et du joueur"""
         pass
 
@@ -30,21 +41,35 @@ class Board:
         """Un joueur tombe sur une case déjà possédée. Aucun return mais des print et màj des données des propriétés et du joueur"""
         pass
 
-    def is_owner(self,player: Player):
+    def is_owner(self, player: Player):
         """Renvoie un booléen vrai si player est le propriétaie de la propriété"""
         pass
 
-    def is_owned(self):
-        """Renvoie un booléen indiquant si la propriété a été achetée ou non"""
+    def is_owned(self, id_space):
+        """Renvoie l'ID du joueur si la propriété située sur id_space a été achetée et None sinon"""
         pass
 
-    def list_property(self,player:Player):
+    def list_property(self, player: Player):
         """retourne la liste des propriétes que possède un joueur"""
+        return []
+
+    def transaction(self, id_give: int, id_receive: int, amount_of_money: int):
         pass
+
 
 class Game:
-    def __init__(self):
-        """initialise le plateau et les joueurs"""
+    def __init__(self, debug=False):
+        """Initialise le board et les joueurs"""
+        if debug:
+            print("\n \n \n #### BEGINNING OF THE DEBUG SESSION #### \n \n \n")
+            answer = input("")
+            aff.clear_console()
+            self.player1 = Player(1)
+            self.player2 = Player(2)
+            self.game_board = Board(True)
+
+    def test_game(self):
+        """Effectue divers test sur le bon fonctionnement du jeu"""
         pass
 
     def begin_game(self):
@@ -52,53 +77,85 @@ class Game:
             It includes :
             -> The Game title page
             @Return the first player to play (an int between 1 and 2)"""
-        aff.build_title(aff.letter,aff.nb_line,aff.nb_column)
-        test_begin = input("")
-        first_player = random.randint(1,2)
-        return first_player
+        aff.clear_console()  # clear the page
+        print(aff.manette_char)  # print an image of a controller
+        print(aff.monopoly_char)  # print the name of the game
+        print("\n \n \n \n \n")
+        print("         A- New Game \n \n         B- Exit \n \n ")
+        answer = ""
+        while (answer != "A" and answer != "B"):
+            answer = input("");
+        if answer == "B":
+            return None
+        aff.clear_console()
+        print(aff.manette_char)  # print an image of a controller
+        print(aff.monopoly_char)  # print the name of the game
+        first_player_index = random.randint(1, 2)
+        print("\n \n \n \n \n The game will start with player ", first_player_index)
+        print("\n \n Press Enter to start")
+        answer = input("")
+        return first_player_index
 
-    def begin_tour(self,player:Player,board:Board):
+    def player_tour(self, player: Player, board: Board):
         """Un tour de jeu pour un joueur"""
-        print("Cest au tour du Joueur ",player.id(), "de jouer !!! \n\n")
-        print("=======================================")
-        print("Richesse Actuelle : ",player.money,"\n")
-        print("Propriétés : \n")
-        property_player = board.list_property(player)
+        aff.clear_console()
+        print(aff.monopoly_char)
+        print("\n \n \n \n")
+        print(" Time for player ", player.id(), "to play !!! \n\n")
+        print("██████████████████████████████████████████")
+        print("\n Your Bank account : ", player.money(), " € \n \n")
+        print(" Properties : \n")
+        property_player = self.game_board.list_property(player)
         for property in property_player:
-            print("-> ",property.name,"\n")
-        print("=======================================")
-        print("clique sur l'écran pour lancer les dés \n")
-
-
-        #fonction qui attend le click (regarder commandes prompt)
-
-
-        dice_result = random.randint(1,12)
-        print("Tu as fait ",dice_result,"\n")
-        player.set_position(player.position + dice_result) #Attention au retour au départ
-        print("Tu es maintenant sur la case - ",board.cases[player.position].name," - \n")
-        if (board.is_owner(player)):
-            print("Tu es chez toi, il ne se passe donc rien !")
-        elif(board.is_owned()):
-
-
-            # Mecanisme de recherche et de paiement
-
-
-            pass
+            print("-> ", property.name, "\n")
+        print("██████████████████████████████████████████")
+        print("\n Press enter to role the dices \n \n")
+        answer = input("")
+        dice_result = random.randint(1, 12)
+        print(" You've got ", dice_result, "\n")
+        player.set_position((player.position() + dice_result) % self.game_board.nb_spaces)
+        print("You're now on - ", self.game_board.cases[player.position()].name(), " - \n \n")
+        if self.game_board.is_owner(player):
+            print(" Welcome Home !!!")
+        elif self.game_board.is_owned(player.position()) is not None:
+            id_of_owner = self.game_board.is_owned(player.position())
+            print(" You must pay a tax to the other player")
+            self.game_board.transaction(player.id, id_of_owner, player.position)
         else:
-            print("Case libre !!! tu peux acheter la propriété \n")
+            print(" Free space, you can own the property \n \n")
+            print(" Do you want to buy it ? \n A- Yes \n B- No")
+            answer = ""
+            while (answer != "A" and answer != "B"):
+                answer = input("")
+            if answer == "A":
+                self.game_board.buy_property(player)
+            else:
+                pass
+        print("\n \n This is the end of your tour. Here is a brief recap of your situation : \n \n")
+        print("██████████████████████████████████████████")
+        print("\n Your Bank account : ", player.money(), " € \n \n")
+        print(" Properties : \n")
+        property_player = self.game_board.list_property(player)
+        for property in property_player:
+            print("  -> ", property.name, "\n")
+        print("██████████████████████████████████████████")
+        print("\n Press enter to continue \n \n")
+        answer = input("")
+        return None
 
-
-            # mécanisme d'achat
-
-
-            pass
-        print ("Fin du Tour. Passer au joueur suivant ? !!!")
-
-    def end_game(self,player:Player):
+    def end_game(self, debug: bool):
         """The last method of the Game. It shows the winner and ends the game"""
-        aff.build_end_page(player:Player)
+        if debug:
+            print("\n \n \n #### END OF DEBUG SESSION #### \n \n \n")
 
+
+if __name__ == '__main__':
+    new_game = Game(True)
+    first_player = new_game.begin_game()
+    if first_player == 1:
+        new_game.player_tour(new_game.player1, new_game)
+    elif first_player == 2:
+        new_game.player_tour(new_game.player2, new_game)
+    new_game.end_game(True)
 
     # Flask, Pyramid, DJango
