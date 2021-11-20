@@ -1,5 +1,5 @@
 import random
-
+import affichage as aff
 from propriete import *
 from player import *
 
@@ -48,9 +48,14 @@ class Game:
         pass
 
     def begin_game(self):
-        """Début de partie"""
-
-        pass
+        """A method that is used in the very beginning of the game to start it
+            It includes :
+            -> The Game title page
+            @Return the first player to play (an int between 1 and 2)"""
+        aff.build_title(aff.letter,aff.nb_line,aff.nb_column)
+        test_begin = input("")
+        first_player = random.randint(1,2)
+        return first_player
 
     def begin_tour(self,player:Player,board:Board):
         """Un tour de jeu pour un joueur"""
@@ -91,8 +96,9 @@ class Game:
             pass
         print ("Fin du Tour. Passer au joueur suivant ? !!!")
 
-    def actu_game(self):
-        pass
+    def end_game(self,player:Player):
+        """The last method of the Game. It shows the winner and ends the game"""
+        aff.build_end_page(player:Player)
 
 
     # Flask, Pyramid, DJango
