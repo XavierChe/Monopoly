@@ -59,7 +59,9 @@ class Board:
                 player_properties.append(self.cases[i])
         return player_properties
 
-    def transaction(self, id_give: int, id_receive: int, amount_of_money: int):
+    def transaction(self, giver: Player, receiver: Player, amount_of_money: int):
+        giver.set_money(giver.money()-amount_of_money)
+        receiver.set_money(receiver.money()+amount_of_money)
 
 
 
