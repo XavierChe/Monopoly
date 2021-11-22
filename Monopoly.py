@@ -132,7 +132,7 @@ class Game:
         print(" You've got ", dice_result, "\n")
         player.set_position((player.position() + dice_result) % self.game_board.nb_spaces)
         print("You're now on - ", self.game_board.cases[player.position()].name(), " - \n \n")
-        if self.game_board.is_owner(player):
+        if (self.game_board.is_owned(player.position())==player.id()):
             print(" Welcome Home !!!")
         elif self.game_board.is_owned(player.position()) is not None:
             id_of_owner = self.game_board.is_owned(player.position())
