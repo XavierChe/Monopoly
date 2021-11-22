@@ -37,7 +37,7 @@ class Board:
         """Un joueur veut acheter une propriété. Aucun return mais fait des print et màj des données des propriétés et du joueur"""
         value=self.cases[player.position()].value()
         if (player.money()<value):
-            print("You don't have enough money to buy the property")
+            print("\n You don't have enough money to buy the property")
         else:
             player.set_money(player.money()-value)
             self.cases[player.position()].set_owner(player.id())
@@ -152,6 +152,8 @@ class Game:
     def end_game(self, debug: bool):
         """The last method of the Game. It shows the winner and ends the game"""
         if debug:
+            aff.clear_console()
+            print(aff.manette_char)
             print("\n \n \n #### END OF DEBUG SESSION #### \n \n \n")
 
 
@@ -159,9 +161,12 @@ if __name__ == '__main__':
     new_game = Game(True)
     first_player = new_game.begin_game()
     if first_player == 1:
-        new_game.player_tour(new_game.players[1], new_game)
+        order = [1, 2]
     elif first_player == 2:
-        new_game.player_tour(new_game.players[2], new_game)
+        order = [2, 1]
+    while (new_game.players[1].money() * new_game.players[2].money() >= 0):
+        new_game.player_tour(new_game.players[order[0]], new_game)
+        new_game.player_tour(new_game.players[order[1]], new_game)
     new_game.end_game(True)
 
     # Flask, Pyramid, DJango
