@@ -15,7 +15,7 @@ class Board:
             _cases = []
             for k in range(5):
                 name = "Property_nb_" + str(k)
-                _cases.append(Property(name))
+                _cases.append(Property(name, 0, 100))
             self.cases = _cases
             self.nb_spaces = 5
         else:
@@ -41,7 +41,7 @@ class Board:
         else:
             player.set_money(player.money()-value)
             self.cases[player.position()].set_owner(player.id())
-            print("You now own ",self.cases[player.position()].name,"\n")
+            print("You now own ", self.cases[player.position()].name(), "\n")
 
     def is_owned(self, id_space):
         """Renvoie l'ID du joueur si la propriété située sur id_space a été achetée et None sinon"""
@@ -125,7 +125,7 @@ class Game:
         elif self.game_board.is_owned(player.position()) is not None:
             id_of_owner = self.game_board.is_owned(player.position())
             print(" You must pay a tax to the other player")
-            self.game_board.transaction(player.id, id_of_owner, player.position)
+            self.game_board.transaction(player, self.players[id_of_owner], 50)
         else:
             print(" Free space, you can own the property \n \n")
             print(" Do you want to buy it ? \n A- Yes \n B- No")
@@ -158,9 +158,9 @@ if __name__ == '__main__':
     new_game = Game(True)
     first_player = new_game.begin_game()
     if first_player == 1:
-        new_game.player_tour(new_game.player1, new_game)
+        new_game.player_tour(new_game.players[1], new_game)
     elif first_player == 2:
-        new_game.player_tour(new_game.player2, new_game)
+        new_game.player_tour(new_game.players[2], new_game)
     new_game.end_game(True)
 
     # Flask, Pyramid, DJango
