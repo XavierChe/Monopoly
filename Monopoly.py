@@ -37,22 +37,11 @@ class Board:
         """Un joueur veut acheter une propriété. Aucun return mais fait des print et màj des données des propriétés et du joueur"""
         value=self.cases[player.position()].value()
         if (player.money()<value):
-            print("Vous n'avez pas asser d'argent pour acheter la propriété")
+            print("You don't have enough money to buy the property")
         else:
             player.set_money(player.money()-value)
             self.cases[player.position()].set_owner(player.id())
-            print("Vous possédez maintenant la propriété")
-
-    def rent_property(self, player: Player):
-        """Un joueur tombe sur une case déjà possédée. Aucun return mais des print et màj des données des propriétés et du joueur"""
-        potential_owner=self.is_owned(player.position())
-        if(potential_owner==None):
-            pass
-        elif (potential_owner==player.id()):
-            pass
-        else:
-            player.set_money(player.money()-self.cases[player.position()].rent())
-            ### Annoncer combien a perdu le joueur ###
+            print("You now own ",self.cases[player.position()].name,"\n")
 
     def is_owned(self, id_space):
         """Renvoie l'ID du joueur si la propriété située sur id_space a été achetée et None sinon"""
@@ -67,11 +56,11 @@ class Board:
         player_properties=[]
         for i in range(1,len(self.cases)):
             if (self.is_owned(i)==player.id()):
-                player_properties.append(i)
+                player_properties.append(self.cases[i])
         return player_properties
 
     def transaction(self, id_give: int, id_receive: int, amount_of_money: int):
-        pass
+
 
 
 class Game:
@@ -81,8 +70,7 @@ class Game:
             print("\n \n \n #### BEGINNING OF THE DEBUG SESSION #### \n \n \n")
             answer = input("")
             aff.clear_console()
-            self.player1 = Player(1)
-            self.player2 = Player(2)
+            self.players = [0,Player(1),Player(2)]
             self.game_board = Board(True)
 
     def test_game(self):
@@ -124,7 +112,7 @@ class Game:
         print(" Properties : \n")
         property_player = self.game_board.list_property(player)
         for property in property_player:
-            print("-> ", property.name, "\n")
+            print("-> ", property.name(), "\n")
         print("██████████████████████████████████████████")
         print("\n Press enter to role the dices \n \n")
         answer = input("")
@@ -154,7 +142,7 @@ class Game:
         print(" Properties : \n")
         property_player = self.game_board.list_property(player)
         for property in property_player:
-            print("  -> ", property.name, "\n")
+            print("  -> ", property.name(), "\n")
         print("██████████████████████████████████████████")
         print("\n Press enter to continue \n \n")
         answer = input("")
