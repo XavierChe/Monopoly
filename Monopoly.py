@@ -163,7 +163,7 @@ if __name__ == '__main__':
         order = [1, 2]
     elif first_player == 2:
         order = [2, 1]
-    while (new_game.players[1].money() * new_game.players[2].money() >= 0):
+    while (new_game.players[1].money() * new_game.players[2].money() >= 0 and first_player != None):
         new_game.player_tour(new_game.players[order[0]], new_game)
         new_game.player_tour(new_game.players[order[1]], new_game)
     new_game.end_game(True)
