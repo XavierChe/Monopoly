@@ -63,8 +63,6 @@ class Board:
         giver.set_money(giver.money()-amount_of_money)
         receiver.set_money(receiver.money()+amount_of_money)
 
-
-
 class Game:
     def __init__(self, debug=False):
         """Initialise le board et les joueurs"""
