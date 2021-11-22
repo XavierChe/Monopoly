@@ -11,7 +11,7 @@ class Property:
 
     def __init__(self,name="#",id=0,value=0,owner=0,nb_houses=0,price_houses=0,rent=0):
         self._name = name
-        self._id = id #Probablement inutile (comme moi)
+        self._id = id #Probablement inutile
         self._value = value
         self._owner = owner
         self._nb_houses = nb_houses

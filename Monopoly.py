@@ -7,8 +7,13 @@ def read_properties(file):
     list_properties = []
     with open(file, "r") as f:
         lines = f.readlines()
+    split_lines = []
     for i in range(len(lines)):
-        list_properties.append(Property(*lines[i].split(" ")))
+        split_lines.append(lines[i].split(" "))
+        for j in range(1,7):
+            split_lines[len(split_lines)-1][j] = int(split_lines[len(split_lines)-1][j])
+    for i in range(len(split_lines)):
+        list_properties.append(Property(*split_lines[i]))
     return list_properties
 
 
@@ -22,11 +27,10 @@ class Board:
             self._nb_spaces = 5
         else:
             # Plus complexe parce qu'il faut différencier toutes les cases
-            self._cases = []
             # Mettre le bon nom de fichier puis ne plus y toucher
             properties = read_properties("properties.txt")
             #self._cases.append("Depart")
-            self._cases += properties
+            self._cases = properties
             self._nb_spaces = len(self._cases)
 
     ## Accesseurs ##
