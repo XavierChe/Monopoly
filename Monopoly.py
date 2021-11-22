@@ -4,32 +4,38 @@ from propriete import *
 from player import *
 
 def read_properties(file):
-    nb_spaces: int
-    list_properties=0
+    list_properties = []
+    with open(file, "r") as f:
+        lines = f.readlines()
+    for i in range(len(lines)):
+        list_properties.append(Property(*lines[i].split(" ")))
     return list_properties
 
 
 class Board:
     def __init__(self, debug: bool):
         if debug:  # create a debug board with only 4 spaces
-            _cases = []
+            cases = []
             for k in range(5):
                 name = "Property_nb_" + str(k)
-                _cases.append(Property(name))
-            self.cases = _cases
-            self.nb_spaces = 5
+                cases.append(Property(name))
+            self._cases = cases
+            self._nb_spaces = 5
         else:
-            # Plus complexe parce qu'il faut différencier toutes les ptn de cases sa mère
+            # Plus complexe parce qu'il faut différencier toutes les cases
             self._cases = []
             # Mettre le bon nom de fichier puis ne plus y toucher
-            properties = read_properties("Coucou")
-            self.cases.append("Depart")
-            for i in range(len(properties)):
-                pass
+            properties = read_properties("properties.txt")
+            #self._cases.append("Depart")
+            self._cases += properties
+            self._nb_spaces = len(self._cases)
 
-    ## Accesseur ##
+    ## Accesseurs ##
     def cases(self):
         return self._cases
+    
+    def nb_spaces(self):
+        return self._nb_spaces
 
     ## Méthodes ##
 
@@ -130,7 +136,7 @@ class Game:
         answer = input("")
         dice_result = random.randint(1, 12)
         print(" You've got ", dice_result, "\n")
-        player.set_position((player.position() + dice_result) % self.game_board.nb_spaces)
+        player.set_position((player.position() + dice_result) % self.game_board.nb_spaces())
         print("You're now on - ", self.game_board.cases[player.position()].name(), " - \n \n")
         if self.game_board.is_owner(player):
             print(" Welcome Home !!!")
