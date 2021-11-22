@@ -15,11 +15,10 @@ def read_properties(file):
 class Board:
     def __init__(self, debug: bool):
         if debug:  # create a debug board with only 4 spaces
-            cases = []
+            self._cases = []
             for k in range(5):
                 name = "Property_nb_" + str(k)
-                cases.append(Property(name))
-            self._cases = cases
+                self._cases.append(Property(name, 0, 100))
             self._nb_spaces = 5
         else:
             # Plus complexe parce qu'il faut différencier toutes les cases
@@ -43,22 +42,11 @@ class Board:
         """Un joueur veut acheter une propriété. Aucun return mais fait des print et màj des données des propriétés et du joueur"""
         value=self.cases[player.position()].value()
         if (player.money()<value):
-            print("Vous n'avez pas asser d'argent pour acheter la propriété")
+            print("\n You don't have enough money to buy the property")
         else:
             player.set_money(player.money()-value)
             self.cases[player.position()].set_owner(player.id())
-            print("Vous possédez maintenant la propriété")
-
-    def rent_property(self, player: Player):
-        """Un joueur tombe sur une case déjà possédée. Aucun return mais des print et màj des données des propriétés et du joueur"""
-        potential_owner=self.is_owned(player.position())
-        if(potential_owner==None):
-            pass
-        elif (potential_owner==player.id()):
-            pass
-        else:
-            player.set_money(player.money()-self.cases[player.position()].rent())
-            ### Annoncer combien a perdu le joueur ###
+            print("You now own ", self.cases[player.position()].name(), "\n")
 
     def is_owned(self, id_space):
         """Renvoie l'ID du joueur si la propriété située sur id_space a été achetée et None sinon"""
@@ -73,12 +61,12 @@ class Board:
         player_properties=[]
         for i in range(1,len(self.cases)):
             if (self.is_owned(i)==player.id()):
-                player_properties.append(i)
+                player_properties.append(self.cases[i])
         return player_properties
 
-    def transaction(self, id_give: int, id_receive: int, amount_of_money: int):
-        pass
-
+    def transaction(self, giver: Player, receiver: Player, amount_of_money: int):
+        giver.set_money(giver.money()-amount_of_money)
+        receiver.set_money(receiver.money()+amount_of_money)
 
 class Game:
     def __init__(self, debug=False):
@@ -87,8 +75,7 @@ class Game:
             print("\n \n \n #### BEGINNING OF THE DEBUG SESSION #### \n \n \n")
             answer = input("")
             aff.clear_console()
-            self.player1 = Player(1)
-            self.player2 = Player(2)
+            self.players = [0,Player(1),Player(2)]
             self.game_board = Board(True)
 
     def test_game(self):
@@ -130,7 +117,7 @@ class Game:
         print(" Properties : \n")
         property_player = self.game_board.list_property(player)
         for property in property_player:
-            print("-> ", property.name, "\n")
+            print("-> ", property.name(), "\n")
         print("██████████████████████████████████████████")
         print("\n Press enter to role the dices \n \n")
         answer = input("")
@@ -138,12 +125,12 @@ class Game:
         print(" You've got ", dice_result, "\n")
         player.set_position((player.position() + dice_result) % self.game_board.nb_spaces())
         print("You're now on - ", self.game_board.cases[player.position()].name(), " - \n \n")
-        if self.game_board.is_owner(player):
+        if (self.game_board.is_owned(player.position())==player.id()):
             print(" Welcome Home !!!")
         elif self.game_board.is_owned(player.position()) is not None:
             id_of_owner = self.game_board.is_owned(player.position())
             print(" You must pay a tax to the other player")
-            self.game_board.transaction(player.id, id_of_owner, player.position)
+            self.game_board.transaction(player, self.players[id_of_owner], 50)
         else:
             print(" Free space, you can own the property \n \n")
             print(" Do you want to buy it ? \n A- Yes \n B- No")
@@ -160,7 +147,7 @@ class Game:
         print(" Properties : \n")
         property_player = self.game_board.list_property(player)
         for property in property_player:
-            print("  -> ", property.name, "\n")
+            print("  -> ", property.name(), "\n")
         print("██████████████████████████████████████████")
         print("\n Press enter to continue \n \n")
         answer = input("")
@@ -169,6 +156,8 @@ class Game:
     def end_game(self, debug: bool):
         """The last method of the Game. It shows the winner and ends the game"""
         if debug:
+            aff.clear_console()
+            print(aff.manette_char)
             print("\n \n \n #### END OF DEBUG SESSION #### \n \n \n")
 
 
@@ -176,9 +165,12 @@ if __name__ == '__main__':
     new_game = Game(True)
     first_player = new_game.begin_game()
     if first_player == 1:
-        new_game.player_tour(new_game.player1, new_game)
+        order = [1, 2]
     elif first_player == 2:
-        new_game.player_tour(new_game.player2, new_game)
+        order = [2, 1]
+    while (new_game.players[1].money() * new_game.players[2].money() >= 0 and first_player != None):
+        new_game.player_tour(new_game.players[order[0]], new_game)
+        new_game.player_tour(new_game.players[order[1]], new_game)
     new_game.end_game(True)
 
     # Flask, Pyramid, DJango
