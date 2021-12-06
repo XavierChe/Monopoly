@@ -46,7 +46,5 @@ class Property:
     def set_nb_houses(self,n):
         self._nb_houses=n
 
-
-    # ===   Méthodes   ===
-
-
+    def type(self):
+        return "Property"
