@@ -1,3 +1,4 @@
+//name, id, value, owner, nb_houses, price_houses, rent
 Boulevard_de_Belleville 0 60 0 0 50 2
 Rue_Lecourbe 1 60 0 0 50 2
 Gare_Montparnasse 2 200 0 0 0 0

@@ -9,6 +9,7 @@ class Player:
         self._position = position
         self._free=free
         self._escape_card=escape
+        
     def position(self):
         return self._position
 
