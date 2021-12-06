@@ -3,8 +3,13 @@ from player import Player
 class Luck:
     def __init__(self):
         pass
+
     def type(self):
         return "Luck"
+
+    def name(self):
+        return "luck card"
+
     def action(self, p : Player):
         n = random.randint(1,10)
         if (n==1):
