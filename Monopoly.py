@@ -8,7 +8,7 @@ def read_properties(file):
     with open(file, "r") as f:
         lines = f.readlines()
     split_lines = []
-    for i in range(len(lines)):
+    for i in range(1,len(lines)):
         split_lines.append(lines[i].split(" "))
         for j in range(1,7):
             split_lines[len(split_lines)-1][j] = int(split_lines[len(split_lines)-1][j])
@@ -166,7 +166,7 @@ class Game:
 
 
 if __name__ == '__main__':
-    new_game = Game(True)
+    new_game = Game(False)
     first_player = new_game.begin_game()
     if first_player == 1:
         order = [1, 2]
