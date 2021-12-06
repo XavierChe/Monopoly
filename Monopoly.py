@@ -44,17 +44,17 @@ class Board:
 
     def buy_property(self, player: Player):
         """Un joueur veut acheter une propriété. Aucun return mais fait des print et màj des données des propriétés et du joueur"""
-        value=self.cases[player.position()].value()
+        value=self.cases()[player.position()].value()
         if (player.money()<value):
             print("\n You don't have enough money to buy the property")
         else:
             player.set_money(player.money()-value)
-            self.cases[player.position()].set_owner(player.id())
-            print("You now own ", self.cases[player.position()].name(), "\n")
+            self.cases()[player.position()].set_owner(player.id())
+            print("You now own ", self.cases()[player.position()].name(), "\n")
 
     def is_owned(self, id_space):
         """Renvoie l'ID du joueur si la propriété située sur id_space a été achetée et None sinon"""
-        potential_owner=self.cases[id_space].owner()
+        potential_owner=self.cases()[id_space].owner()
         if (potential_owner==0):
             return None
         else:
@@ -63,9 +63,9 @@ class Board:
     def list_property(self, player: Player):
         """retourne la liste des propriétes que possède un joueur"""
         player_properties=[]
-        for i in range(1,len(self.cases)):
+        for i in range(1,len(self.cases())):
             if (self.is_owned(i)==player.id()):
-                player_properties.append(self.cases[i])
+                player_properties.append(self.cases()[i])
         return player_properties
 
     def transaction(self, giver: Player, receiver: Player, amount_of_money: int):
@@ -128,7 +128,7 @@ class Game:
         dice_result = random.randint(1, 12)
         print(" You've got ", dice_result, "\n")
         player.set_position((player.position() + dice_result) % self.game_board.nb_spaces())
-        print("You're now on - ", self.game_board.cases[player.position()].name(), " - \n \n")
+        print("You're now on - ", self.game_board.cases()[player.position()].name(), " - \n \n")
         if (self.game_board.is_owned(player.position())==player.id()):
             print(" Welcome Home !!!")
         elif self.game_board.is_owned(player.position()) is not None:
