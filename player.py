@@ -3,12 +3,13 @@ class Player:
     _money : int
     _position : int
     
-    def __init__(self, id_num=0, money=200, position=0,free=True,escape=0):
+    def __init__(self, id_num=0, money=200, position=0,free=True,escape=0,round_in_prison=0):
         self._id = id_num
         self._money = money
         self._position = position
         self._free=free
         self._escape_card=escape
+        self._round_in_prison=round_in_prison
         
     def position(self):
         return self._position
@@ -25,6 +26,9 @@ class Player:
     def escape_card(self):
         return self._escape_card
 
+    def round_in_prison(self):
+        return self._round_in_prison
+
     def set_money(self, money):
         self._money=money
 
@@ -36,3 +40,6 @@ class Player:
 
     def set_escape_card(self,c):
         self._escape_card=c
+
+    def set_round_in_prison(self,c):
+        self.round_in_prison=c
