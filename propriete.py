@@ -67,7 +67,7 @@ class Luck(Case):
         super().__init__("Luck",id)
 
     def action(self, p : Player):
-        n = random.randint(1,6)
+        n = random.randint(1,8)
         if (n==1):
             print("Allez en prison. Allez tout droit à la prison. Ne passez pas par la case départ, ne reçevez pas 200€.\n")
             p.set_free(False)
@@ -77,39 +77,31 @@ class Luck(Case):
             if (p.position()>25):
                 p.set_money(p.money()+200)
             p.set_position(25)
-        if (n==2):
+        if (n==3):
             print("Rendez-vous Avenue Henri Martin. Si vous passez par la case départ, recevez 200€.\n")
             if(p.position()>16):
-                p.set_money(p.money+200)
+                p.set_money(p.money()+200)
             p.set_position(16)
-        if (n==2):
+        if (n==4):
             print("Rendez-vous case Départ. Recevez 400€.\n")
             p.set_position(0)
             p.set_money(p.money()+400)
-        if (n == 3):
+        if (n == 5):
             print("La banque vous verse un dividende de 50€.\n")
             p.set_money(p.money()+50)
-        if (n == 4):
+        if (n == 6):
             print("Vous êtes libéré de prison. Cette carte peut être conservée jusqu'à ce qu'elle soit utilisée ou vendue.\n")
             p.set_escape_card(p.escape_card()+1)
-        if (n == 5):
+        if (n == 7):
             print("Amende pour excès de vitesse. Payez 50€.\n")
             p.set_money(p.money()-50)
-        if (n == 6):
+        if (n == 8):
             print("Amende pour ivresse. Payez 50€.\n")
             p.set_money(p.money()-50)
-        # if (n == 7):
-        #     pass
-        # if (n == 8):
-        #     pass
-        # if (n == 9):
-        #     pass
-        # if (n == 10):
-        #     pass
 
 class GoToPrison(Case):
     def __init__(self):
-        super.__init__("Go_to_Prison",30)
+        super().__init__("Go_to_Prison",30)
 
     def imprison(self,player : Player):
         player.set_position(10)
@@ -117,7 +109,7 @@ class GoToPrison(Case):
 
 class Prison(Case):
     def __init__(self):
-        super.__init__("Prison",10)
+        super().__init__("Prison",10)
 
     def exit_prison(self,player : Player):
         player.set_free(True)
@@ -144,7 +136,7 @@ class Prison(Case):
 
 class Taxes(Case):
     def __init__(self,id=0,value=0):
-        super.__init__("Taxes",id)
+        super().__init__("Taxes",id)
         self._value_tax=value
 
     def value(self):
@@ -155,7 +147,7 @@ class Taxes(Case):
 
 class Company(Case):
     def __init__(self,id,owner=0):
-        super.__init__("Company",id)
+        super().__init__("Company",id)
         self._value=100
         self._owner=owner
 

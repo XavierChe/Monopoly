@@ -83,8 +83,9 @@ class Board:
         """retourne la liste des propriétes que possède un joueur"""
         player_properties=[]
         for i in range(1,len(self.cases())):
-            if (self.is_owned(i)==player.id()):
-                player_properties.append(self.cases()[i])
+            if(self.cases()[i].name() not in ["Luck","Prison","Go_to_Prison","Taxes","Free_Park"]):
+                if (self.is_owned(i) == player.id()):
+                    player_properties.append(self.cases()[i])
         return player_properties
 
     def transaction(self, giver: Player, receiver: Player, amount_of_money: int):
@@ -99,7 +100,7 @@ class Game:
             answer = input("")
             aff.clear_console()
             self.players = [0,Player(1),Player(2)]
-            self.game_board = Board(True)
+            self.game_board = Board(False)
 
     def test_game(self):
         """Effectue divers test sur le bon fonctionnement du jeu"""
@@ -179,34 +180,17 @@ class Game:
             player.set_position((player.position() + dice_result) % self.game_board.nb_spaces())
             print("You're now on - ", self.game_board.cases()[player.position()].name(), " - \n \n")
 
-            ## Cas propriété ##
-            if (self.game_board.cases()[player.position()].name() == "Property"):
-                if (self.game_board.is_owned(player.position()) == player.id()):
-                    print(" Welcome Home !!!")
-                elif self.game_board.is_owned(player.position()) is not None:
-                    id_of_owner = self.game_board.is_owned(player.position())
-                    print(" You must pay a tax to player ", id_of_owner, "\n \n")
-                    print(" It costs ",self.game_board.cases()[player.position()].rent(),"\n \n")
-                    self.game_board.transaction(player, self.players[id_of_owner], self.game_board.cases()[player.position()].rent())
-                else:
-                    print(" Free space, you can buy the property \n \n")
-                    print(" It costs ",self.game_board.cases()[player.position()].value(), "\n \n")
-                    print(" Do you want to buy it ? \n A- Yes \n B- No")
-                    answer = ""
-                    while (answer != "A" and answer != "B"):
-                        answer = input("")
-                    if answer == "A":
-                        self.game_board.buy_property(player)
-                    else:
-                        pass
-
             ## Cas départ ##
-            elif (self.game_board.cases()[player.position()].name() == "Depart"):
+            if (self.game_board.cases()[player.position()].name() == "Depart"):
                 print("You are at the start !!\n")
 
             ## Cas Parc Gratuit ##
             elif (self.game_board.cases()[player.position()].name() == "Free_Park"):
                 print("You are at the free park !!\n")
+
+            ## Cas Simple visite en Prison ##
+            elif(self.game_board.cases()[player.position()].name() == "Prison"):
+                print(" You are just visiting the prison \n \n")
 
             ## Cas Allez En Prison ##
             elif (self.game_board.cases()[player.position()].name() == "Go_to_Prison"):
@@ -214,8 +198,8 @@ class Game:
                 self.game_board.cases()[player.position()].imprison(player)
 
             ## Cas Chance ##
-            elif (self.game_board.cases()[player.position()].type() == "Luck"):
-                self.game_board.cases()[player.position()].action()
+            elif (self.game_board.cases()[player.position()].name() == "Luck"):
+                self.game_board.cases()[player.position()].action(player)
 
             ## Cas Taxes ##
             elif (self.game_board.cases()[player.position()].name() == "Taxes"):
@@ -247,6 +231,30 @@ class Game:
                     else:
                         pass
 
+            ## Cas propriété ##
+            else:
+                if (self.game_board.is_owned(player.position()) == player.id()):
+                    print(" Welcome Home !!!")
+                elif self.game_board.is_owned(player.position()) is not None:
+                    id_of_owner = self.game_board.is_owned(player.position())
+                    print(" You must pay a tax to player ", id_of_owner, "\n \n")
+                    print(" It costs ", self.game_board.cases()[player.position()].rent(), "\n \n")
+                    self.game_board.transaction(player, self.players[id_of_owner],
+                                                self.game_board.cases()[player.position()].rent())
+                else:
+                    print(" Free space, you can buy the property \n \n")
+                    print(" It costs ", self.game_board.cases()[player.position()].value(), "\n \n")
+                    print(" Do you want to buy it ? \n A- Yes \n B- No")
+                    answer = ""
+                    while (answer != "A" and answer != "B"):
+                        answer = input("")
+                    if answer == "A":
+                        self.game_board.buy_property(player)
+                    else:
+                        pass
+
+
+
         print("\n \n This is the end of your turn. Here is a brief recap of your situation : \n \n")
         print("██████████████████████████████████████████")
         print("\n Your Bank account : ", player.money(), " € \n \n")
@@ -268,7 +276,7 @@ class Game:
 
 
 if __name__ == '__main__':
-    new_game = Game(False)
+    new_game = Game(True)
     first_player = new_game.begin_game()
     if first_player == 1:
         order = [1, 2]
