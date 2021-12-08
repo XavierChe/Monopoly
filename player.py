@@ -5,9 +5,11 @@ class Player:
     _free : bool
     _escape_card : int
     _round_in_prison : int
+    _player_name : str
     
-    def __init__(self, id_num=0, money=200, position=0,free=True,escape=0,round_in_prison=0):
+    def __init__(self, id_num=0, player_name="#", money=1500, position=0,free=True,escape=0,round_in_prison=0):
         self._id = id_num
+        self._player_name=player_name
         self._money = money
         self._position = position
         self._free=free
@@ -19,6 +21,9 @@ class Player:
 
     def id(self):
         return self._id
+
+    def name(self):
+        return self._player_name
 
     def money(self):
         return self._money

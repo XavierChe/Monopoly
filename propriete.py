@@ -83,9 +83,9 @@ class Luck(Case):
             p.set_position(10)
         if (n==2):
             print(" Rendez-vous Rue de La Paix. Si vous passez par la case départ, recevez 200€.\n")
-            if (p.position()>25):
+            if (p.position()>39):
                 p.set_money(p.money()+200)
-            p.set_position(25)
+            p.set_position(39)
         if (n==3):
             print(" Rendez-vous Avenue Henri Martin. Si vous passez par la case départ, recevez 200€.\n")
             if(p.position()>16):

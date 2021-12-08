@@ -51,7 +51,6 @@ class Board:
                 else:
                     self._cases.append(properties[c])
                     c+=1
-
             self._nb_spaces = 40
 
     ## Accesseurs ##
@@ -95,7 +94,7 @@ class Board:
         receiver.set_money(receiver.money()+amount_of_money)
 
 class Game:
-    def __init__(self, debug=False):
+    def __init__(self, debug=False,nb_players = 2):
         """Initialise le board et les joueurs"""
         if debug:
             print("\n \n \n #### BEGINNING OF THE DEBUG SESSION #### \n \n \n")
@@ -105,7 +104,11 @@ class Game:
             self.game_board = Board(True)
         else:
             aff.clear_console()
-            self.players = [0, Player(1,1500,0,True,0,0), Player(2,1500,0,True,0,0)]
+            self.players = [0]
+            for i in range (1,nb_players+1):
+                print(" Write the name of the player created : \n ")
+                player_name=input("")
+                self.players.append(Player(i,player_name))
             self.game_board = Board(False)
 
     def test_game(self):
@@ -138,16 +141,16 @@ class Game:
 
     def player_tour(self, player: Player, board: Board):
         """Un tour de jeu pour un joueur"""
-        #aff.clear_console()
+        aff.clear_console()
         print(aff.monopoly_char)
         print("\n \n \n \n")
-        print(" Time for player ", player.id(), "to play !!! \n\n")
+        print(" Time for ", player.name(), "to play !!! \n\n")
         print("██████████████████████████████████████████")
         print("\n Your Bank account : ", player.money(), " € \n \n")
         print(" Properties : \n")
         property_player = self.game_board.list_property(player)
-        for property in property_player:
-            print("-> ", property.name(), "\n")
+        for i in range(1,len(property_player)+1):
+            print(" ", i," - ", property_player[i-1].name(), " - Number of houses : ",property_player[i-1].nb_houses() , "\n")
         print("██████████████████████████████████████████")
         ## b est un booléen pour déterminer si le joueur peut lancer les dés pour avancer
         b=True
@@ -278,8 +281,9 @@ class Game:
         print("\n Your Bank account : ", player.money(), " € \n \n")
         print(" Properties : \n")
         property_player = self.game_board.list_property(player)
-        for property in property_player:
-            print("  -> ", property.name(), "\n")
+        for i in range(1, len(property_player) + 1):
+            print(" ", i, " - ", property_player[i - 1].name(), " - Number of houses : ", property_player[i - 1].nb_houses(),
+                  "\n")
         print("██████████████████████████████████████████")
         print("\n Press enter to continue \n \n")
         answer = input("")
@@ -294,15 +298,15 @@ class Game:
 
 
 if __name__ == '__main__':
-    new_game = Game(False)
-    first_player = new_game.begin_game()
-    if first_player == 1:
-        order = [1, 2]
-    elif first_player == 2:
-        order = [2, 1]
-    while (new_game.players[1].money() * new_game.players[2].money() >= 0 and first_player != None):
-        new_game.player_tour(new_game.players[order[0]], new_game)
-        new_game.player_tour(new_game.players[order[1]], new_game)
+    print("\n \n Choose the number of players \n \n")
+    nb_players=int(input(""))
+    new_game = Game(False,nb_players)
+    id_current_player = random.randint(1,nb_players)
+    while (new_game.players[1].money() * new_game.players[2].money() >= 0):
+        if (id_current_player>nb_players):
+            id_current_player=1
+        new_game.player_tour(new_game.players[id_current_player], new_game)
+        id_current_player+=1
     new_game.end_game(True)
 
     # Flask, Pyramid, DJango
