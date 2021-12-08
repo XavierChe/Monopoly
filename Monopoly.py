@@ -44,8 +44,10 @@ class Board:
                     self._cases.append(Case("Free_Park",i))
                 elif (i==30):
                     self._cases.append(GoToPrison())
-                elif (i==12 or i==28):
-                    self._cases.append(Company(i))
+                elif (i==12):
+                    self._cases.append(Company(i,"Companie des eaux"))
+                elif (i==28):
+                    self._cases.append(Company(i,"Companie d'électricité"))
                 else:
                     self._cases.append(properties[c])
                     c+=1
@@ -69,7 +71,7 @@ class Board:
         else:
             player.set_money(player.money()-value)
             self.cases()[player.position()].set_owner(player.id())
-            print("You now own ", self.cases()[player.position()].name(), "\n")
+            print("\n You now own ", self.cases()[player.position()].name(), "\n")
 
     def is_owned(self, id_space):
         """Renvoie l'ID du joueur si la propriété située sur id_space a été achetée et None sinon"""
@@ -83,7 +85,7 @@ class Board:
         """retourne la liste des propriétes que possède un joueur"""
         player_properties=[]
         for i in range(1,len(self.cases())):
-            if(self.cases()[i].name() not in ["Luck","Prison","Go_to_Prison","Taxes","Free_Park"]):
+            if(self.cases()[i].type() in ["Property","Company"]):
                 if (self.is_owned(i) == player.id()):
                     player_properties.append(self.cases()[i])
         return player_properties
@@ -100,6 +102,10 @@ class Game:
             answer = input("")
             aff.clear_console()
             self.players = [0,Player(1),Player(2)]
+            self.game_board = Board(True)
+        else:
+            aff.clear_console()
+            self.players = [0, Player(1,1500,0,True,0,0), Player(2,1500,0,True,0,0)]
             self.game_board = Board(False)
 
     def test_game(self):
@@ -132,7 +138,7 @@ class Game:
 
     def player_tour(self, player: Player, board: Board):
         """Un tour de jeu pour un joueur"""
-        aff.clear_console()
+        #aff.clear_console()
         print(aff.monopoly_char)
         print("\n \n \n \n")
         print(" Time for player ", player.id(), "to play !!! \n\n")
@@ -148,21 +154,25 @@ class Game:
         ## Cas Prison ##
 
         if (player.free()==False):
-            print("You are imprisonned. \n Do you want to roll the dices to try to exit the prison this round ? \n")
-            print("A- Yes \n \nB- No \n \n ")
-            answer = ""
-            while (answer != "A" and answer != "B"):
-                answer = input("");
-            if answer == "B":
-                b=self.game_board.cases()[player.position()].rounds_passed(player)
-            else:
-                print("\n Press enter to role the dices \n \n")
-                answer = input("")
-                dice_1 = random.randint(1, 6)
-                dice_2 = random.randint(1, 6)
-                print(" You've got ", dice_1, " and ", dice_2, "\n")
-                b=self.game_board.cases()[player.position()].trying_to_escape_prison(dice_1,dice_2,player)
-
+            if (player.escape_card()>0):
+                print(" You have an escape card, you can leave the prison for free. \n")
+                player.set_free(True)
+                player.set_escape_card(player.escape_card()-1)
+            else :
+                print("You are imprisonned. \n Do you want to roll the dices to try to exit the prison this round ? \n")
+                print("A- Yes \n \nB- No \n \n ")
+                answer = ""
+                while (answer != "A" and answer != "B"):
+                    answer = input("");
+                if answer == "B":
+                    b = self.game_board.cases()[player.position()].rounds_passed(player)
+                else:
+                    print("\n Press enter to role the dices \n \n")
+                    answer = input("")
+                    dice_1 = random.randint(1, 6)
+                    dice_2 = random.randint(1, 6)
+                    print(" You've got ", dice_1, " and ", dice_2, "\n")
+                    b = self.game_board.cases()[player.position()].trying_to_escape_prison(dice_1, dice_2, player)
 
         ## Cas possibilité d'avancer ##
 
@@ -172,42 +182,49 @@ class Game:
             dice_1 = random.randint(1, 6)
             dice_2 = random.randint(1, 6)
             dice_result = dice_1 + dice_2
-            print(" You've got ", dice_1, " and ", dice_2, "\n")
-            if (player.position() + dice_result >= self.game_board.nb_spaces()):
+            print(" You've got", dice_1, "and", dice_2, "\n")
+            if (player.position() + dice_result > self.game_board.nb_spaces()):
                 player.set_money(player.money() + 200)
+                print(" You passed the Start ! You receive 200€ ! \n \n")
             if (player.position() + dice_result == 40):
-                player.set_money(player.money() + 200)
+                player.set_money(player.money() + 400)
+                print(" You're exactly at the Start ! You receive 400€ ! \n \n")
             player.set_position((player.position() + dice_result) % self.game_board.nb_spaces())
-            print("You're now on - ", self.game_board.cases()[player.position()].name(), " - \n \n")
 
             ## Cas départ ##
-            if (self.game_board.cases()[player.position()].name() == "Depart"):
-                print("You are at the start !!\n")
+            if (self.game_board.cases()[player.position()].type() == "Start"):
+                print(" You are at the start !!\n")
 
             ## Cas Parc Gratuit ##
-            elif (self.game_board.cases()[player.position()].name() == "Free_Park"):
-                print("You are at the free park !!\n")
+            elif (self.game_board.cases()[player.position()].type() == "Free_Park"):
+                print(" You're now on - ", self.game_board.cases()[player.position()].type(), " - \n \n")
+                print(" You are at the free park !!\n")
 
             ## Cas Simple visite en Prison ##
-            elif(self.game_board.cases()[player.position()].name() == "Prison"):
+            elif(self.game_board.cases()[player.position()].type() == "Prison"):
+                print(" You're now on - ", self.game_board.cases()[player.position()].type(), " - \n \n")
                 print(" You are just visiting the prison \n \n")
 
             ## Cas Allez En Prison ##
-            elif (self.game_board.cases()[player.position()].name() == "Go_to_Prison"):
-                print("How unlucky... You're imprisonned...\n")
+            elif (self.game_board.cases()[player.position()].type() == "Go_to_Prison"):
+                print(" You're now on - ", self.game_board.cases()[player.position()].type(), " - \n \n")
+                print(" How unlucky... You're imprisonned...\n")
                 self.game_board.cases()[player.position()].imprison(player)
 
             ## Cas Chance ##
-            elif (self.game_board.cases()[player.position()].name() == "Luck"):
+            elif (self.game_board.cases()[player.position()].type() == "Luck"):
+                print(" You're now on - ", self.game_board.cases()[player.position()].type(), " - \n \n")
                 self.game_board.cases()[player.position()].action(player)
 
             ## Cas Taxes ##
-            elif (self.game_board.cases()[player.position()].name() == "Taxes"):
-                print("Oh nooooo, you have to pay taxes... It costs ", self.game_board.cases()[player.position()].value())
+            elif (self.game_board.cases()[player.position()].type() == "Taxes"):
+                print(" You're now on - ", self.game_board.cases()[player.position()].type(), " - \n \n")
+                print(" Oh nooooo, you have to pay taxes... It costs ", self.game_board.cases()[player.position()].value(), "€")
                 self.game_board.cases()[player.position()].pay(player)
 
             ## Cas Compagnies ##
-            elif (self.game_board.cases()[player.position()].name() == "Company"):
+            elif (self.game_board.cases()[player.position()].type() == "Company"):
+                print(" You're now on - ", self.game_board.cases()[player.position()].name(), " - \n \n")
                 if (self.game_board.is_owned(player.position()) == player.id()):
                     print(" Welcome Home !!!")
                 elif self.game_board.is_owned(player.position()) is not None:
@@ -221,7 +238,7 @@ class Game:
                         self.game_board.transaction(player, self.players[id_of_owner],4*dice_result)
                 else:
                     print(" Free space, you can buy the property \n \n")
-                    print(" It costs ",self.game_board.cases()[player.position()].value(), "\n \n")
+                    print(" It costs ",self.game_board.cases()[player.position()].value(), "€", "\n \n")
                     print(" Do you want to buy it ? \n A- Yes \n B- No")
                     answer = ""
                     while (answer != "A" and answer != "B"):
@@ -233,17 +250,18 @@ class Game:
 
             ## Cas propriété ##
             else:
+                print(" You're now on - ", self.game_board.cases()[player.position()].name(), " - \n \n")
                 if (self.game_board.is_owned(player.position()) == player.id()):
                     print(" Welcome Home !!!")
                 elif self.game_board.is_owned(player.position()) is not None:
                     id_of_owner = self.game_board.is_owned(player.position())
                     print(" You must pay a tax to player ", id_of_owner, "\n \n")
-                    print(" It costs ", self.game_board.cases()[player.position()].rent(), "\n \n")
+                    print(" It costs ", self.game_board.cases()[player.position()].rent(),"€", "\n \n")
                     self.game_board.transaction(player, self.players[id_of_owner],
                                                 self.game_board.cases()[player.position()].rent())
                 else:
                     print(" Free space, you can buy the property \n \n")
-                    print(" It costs ", self.game_board.cases()[player.position()].value(), "\n \n")
+                    print(" It costs ", self.game_board.cases()[player.position()].value(),"€", "\n \n")
                     print(" Do you want to buy it ? \n A- Yes \n B- No")
                     answer = ""
                     while (answer != "A" and answer != "B"):
@@ -276,7 +294,7 @@ class Game:
 
 
 if __name__ == '__main__':
-    new_game = Game(True)
+    new_game = Game(False)
     first_player = new_game.begin_game()
     if first_player == 1:
         order = [1, 2]

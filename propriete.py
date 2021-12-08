@@ -3,11 +3,11 @@ import Monopoly
 import random
 
 class Case:
-    _name: str
+    _type: str
     _id: int
 
-    def __init__(self,name="#",id=0):
-        self._name = name
+    def __init__(self,type="#",id=0):
+        self._type = type
         self._id = id
 
     # === Accesseurs ===
@@ -15,8 +15,8 @@ class Case:
     def id(self):
         return self._id
 
-    def name(self):
-        return self._name
+    def type(self):
+        return self._type
 
 
 class Property(Case):
@@ -31,7 +31,8 @@ class Property(Case):
     _rent: int
 
     def __init__(self,name="#",id=0,value=0,owner=0,nb_houses=0,price_houses=0,rent=0):
-        super().__init__(name,id)
+        super().__init__("Property",id)
+        self._name=name
         self._value = value
         self._owner = owner
         self._nb_houses = nb_houses
@@ -39,6 +40,8 @@ class Property(Case):
         self._rent = rent
 
     # ===   Accesseurs   ===
+    def name(self):
+        return self._name
 
     def value(self):
         return self._value
@@ -61,6 +64,12 @@ class Property(Case):
     def set_nb_houses(self,n):
         self._nb_houses=n
 
+    def print_information(self):
+        print("\n Name of the property : ", self._name, "\n")
+        print("\n Price of a house : ",self._price_houses, "\n")
+        print("\n Number of houses : ", self._nb_houses, "\n")
+        print("\n Price of the rent :", self._rent, "\n")
+
 
 class Luck(Case):
     def __init__(self,id):
@@ -69,34 +78,34 @@ class Luck(Case):
     def action(self, p : Player):
         n = random.randint(1,8)
         if (n==1):
-            print("Allez en prison. Allez tout droit à la prison. Ne passez pas par la case départ, ne reçevez pas 200€.\n")
+            print(" Allez en prison. Allez tout droit à la prison. Ne passez pas par la case départ, ne reçevez pas 200€.\n")
             p.set_free(False)
             p.set_position(10)
         if (n==2):
-            print("Rendez-vous Rue de La Paix. Si vous passez par la case départ, recevez 200€.\n")
+            print(" Rendez-vous Rue de La Paix. Si vous passez par la case départ, recevez 200€.\n")
             if (p.position()>25):
                 p.set_money(p.money()+200)
             p.set_position(25)
         if (n==3):
-            print("Rendez-vous Avenue Henri Martin. Si vous passez par la case départ, recevez 200€.\n")
+            print(" Rendez-vous Avenue Henri Martin. Si vous passez par la case départ, recevez 200€.\n")
             if(p.position()>16):
                 p.set_money(p.money()+200)
             p.set_position(16)
         if (n==4):
-            print("Rendez-vous case Départ. Recevez 400€.\n")
+            print(" Rendez-vous case Départ. Recevez 400€.\n")
             p.set_position(0)
             p.set_money(p.money()+400)
         if (n == 5):
-            print("La banque vous verse un dividende de 50€.\n")
+            print(" La banque vous verse un dividende de 50€.\n")
             p.set_money(p.money()+50)
         if (n == 6):
-            print("Vous êtes libéré de prison. Cette carte peut être conservée jusqu'à ce qu'elle soit utilisée ou vendue.\n")
+            print(" Vous êtes libéré de prison. Cette carte peut être conservée jusqu'à ce qu'elle soit utilisée ou vendue.\n")
             p.set_escape_card(p.escape_card()+1)
         if (n == 7):
-            print("Amende pour excès de vitesse. Payez 50€.\n")
+            print(" Amende pour excès de vitesse. Payez 50€.\n")
             p.set_money(p.money()-50)
         if (n == 8):
-            print("Amende pour ivresse. Payez 50€.\n")
+            print(" Amende pour ivresse. Payez 50€.\n")
             p.set_money(p.money()-50)
 
 class GoToPrison(Case):
@@ -119,43 +128,50 @@ class Prison(Case):
 
     def rounds_passed(self,player : Player):
         if (player.round_in_prison()==3):
-            print("You can exit the prison !\n")
+            print(" You can exit the prison !\n")
             return self.exit_prison(player)
         else :
-            print("You can't exit the prison...\n")
-            player.set_round_in_prison(player.round_in_prison() + 1)
+            print(" You can't exit the prison...\n")
+            player.set_round_in_prison(player.round_in_prison()+1)
             return False
 
-    def trying_to_escape_prison(self,dice_1,dice_2,player : Player):
+    def trying_to_escape_prison(self, dice_1, dice_2, player: Player):
         if (dice_1==dice_2):
-            print("You can exit the prison !\n")
+            print(" You can exit the prison ! But you have to pay 50€.\n")
             return self.exit_prison(player)
         else:
-            print("You can't exit the prison...\n")
-            return player.rounds_passed(player)
+            return self.rounds_passed(player)
 
 class Taxes(Case):
-    def __init__(self,id=0,value=0):
-        super().__init__("Taxes",id)
-        self._value_tax=value
+    def __init__(self, id=0, value=0):
+        super().__init__("Taxes", id)
+        self._value_tax = value
 
     def value(self):
         return self._value_tax
 
-    def pay(self,player : Player):
+    def pay(self, player: Player):
         player.set_money(player.money()-self._value_tax)
 
 class Company(Case):
-    def __init__(self,id,owner=0):
-        super().__init__("Company",id)
+    def __init__(self, id, name="#", owner=0):
+        super().__init__("Company", id)
         self._value=100
+        self._name=name
         self._owner=owner
 
     def value(self):
         return self._value
 
+    def name(self):
+        return self._name
+
     def owner(self):
         return self._owner
 
-    def set_owner(self,id):
-        self._owner=id
+    def set_owner(self, id):
+        self._owner = id
+
+class TrainStation(Case):
+    def __init__(self,id):
+        super().__init__("Train_Station",id)

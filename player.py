@@ -2,6 +2,9 @@ class Player:
     _id : int
     _money : int
     _position : int
+    _free : bool
+    _escape_card : int
+    _round_in_prison : int
     
     def __init__(self, id_num=0, money=200, position=0,free=True,escape=0,round_in_prison=0):
         self._id = id_num
@@ -42,4 +45,4 @@ class Player:
         self._escape_card=c
 
     def set_round_in_prison(self,c):
-        self.round_in_prison=c
+        self._round_in_prison=c
