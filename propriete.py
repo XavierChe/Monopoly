@@ -1,5 +1,4 @@
 from player import Player
-import Monopoly
 import random
 
 class Case:
@@ -28,11 +27,11 @@ class Property(Case):
     _nb_houses: int
     _price_houses: int
     #Prix à payer si pas proprio
-    _rent: int
+    _rent: list
 
-    def __init__(self,name="#",id=0,value=0,owner=0,nb_houses=0,price_houses=0,rent=0):
+    def __init__(self,name="#",id=0,value=0,owner=0,nb_houses=0,price_houses=0,rent=[0]*5):
         super().__init__("Property",id)
-        self._name=name
+        self._name = name.replace("_"," ")
         self._value = value
         self._owner = owner
         self._nb_houses = nb_houses
@@ -56,7 +55,7 @@ class Property(Case):
         return self._price_houses
 
     def rent(self):
-        return self._rent
+        return self._rent[self._nb_houses]
 
     def set_owner(self,id):
         self._owner=id
@@ -68,7 +67,9 @@ class Property(Case):
         print("\n Name of the property : ", self._name, "\n")
         print("\n Price of a house : ",self._price_houses, "\n")
         print("\n Number of houses : ", self._nb_houses, "\n")
-        print("\n Price of the rent :", self._rent, "\n")
+        for i in range(5):
+            print("\n Price of the rent with : ", i, "houses : ", self._rent[i], "\n")
+        print("\n Price of the rent with a hotel : ", self._rent[5], "\n")
 
 
 class Luck(Case):

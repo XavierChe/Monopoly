@@ -28,7 +28,6 @@ class Board:
             # Plus complexe parce qu'il faut différencier toutes les cases
             # Mettre le bon nom de fichier puis ne plus y toucher
             properties = read_properties("properties.txt")
-            #self._cases.append("Depart")
             self._cases = [Case("Start",0)]
             c=0
             for i in range(1,40):
@@ -41,7 +40,7 @@ class Board:
                 elif (i==10):
                     self._cases.append(Prison())
                 elif (i==20):
-                    self._cases.append(Case("Free_Park",i))
+                    self._cases.append(Case("Free Park",i))
                 elif (i==30):
                     self._cases.append(GoToPrison())
                 elif (i==12):
@@ -69,7 +68,6 @@ class Board:
         return self._nb_spaces
 
     ## Méthodes ##
-
     def buy_property(self, player: Player):
         """Un joueur veut acheter une propriété. Aucun return mais fait des print et màj des données des propriétés et du joueur"""
         value=self.cases()[player.position()].value()
@@ -191,16 +189,16 @@ class Game:
         ## Cas possibilité d'avancer ##
 
         if(b):
-            print("\n Press enter to role the dices \n \n")
+            print("\n Press enter to roll the dices \n \n")
             answer = input("")
             dice_1 = random.randint(1, 6)
             dice_2 = random.randint(1, 6)
             dice_result = dice_1 + dice_2
-            print(" You've got", dice_1, "and", dice_2, "\n")
+            print(" You've got", dice_1, "+", dice_2, "\n")
             if (player.position() + dice_result > self.game_board.nb_spaces()):
                 player.set_money(player.money() + 200)
                 print(" You passed the Start ! You receive 200€ ! \n \n")
-            if (player.position() + dice_result == 40):
+            if (player.position() + dice_result == self.game_board.nb_spaces()):
                 player.set_money(player.money() + 400)
                 print(" You're exactly at the Start ! You receive 400€ ! \n \n")
             player.set_position((player.position() + dice_result) % self.game_board.nb_spaces())
