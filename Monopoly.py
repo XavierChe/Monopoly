@@ -2,7 +2,6 @@ import random
 import affichage as aff
 from propriete import *
 from player import *
-from luck import *
 
 def read_properties(file):
     list_properties = []
@@ -59,7 +58,6 @@ class Board:
         return self._nb_spaces
 
     ## Méthodes ##
-
     def buy_property(self, player: Player):
         """Un joueur veut acheter une propriété. Aucun return mais fait des print et màj des données des propriétés et du joueur"""
         value=self.cases()[player.position()].value()
