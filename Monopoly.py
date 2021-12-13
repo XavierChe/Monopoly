@@ -176,7 +176,7 @@ class Game:
                 print("A- Yes \n \nB- No \n \n ")
                 answer = ""
                 while (answer != "A" and answer != "B"):
-                    answer = input("");
+                    answer = input("")
                 if answer == "B":
                     b = self.game_board.cases()[player.position()].rounds_passed(player)
                 else:
@@ -283,7 +283,7 @@ class Game:
                         pass
 
 
-        print("\n \n This is the end of your turn. Here is a brief recap of your situation : \n \n")
+        print("\n \n Here is a brief recap of your situation : \n \n")
         print("██████████████████████████████████████████")
         print("\n Your Bank account : ", player.money(), " € \n \n")
         print(" Properties : \n")
@@ -295,6 +295,28 @@ class Game:
             else:
                 print(" ", i, " - ", property_player[i - 1].name(), "\n")
         print("██████████████████████████████████████████")
+        if (len(property_player)>0):
+            answer = ""
+            while (answer != "B"):
+                print("\n \n Do you want to display information about one of your properties ? (Does not work for train stations or companies) \n A- Yes \n B- No")
+                answer = input("")
+                if answer == "A":
+                    print(" \n Which property ? Enter the id diplayed in the recap : \n \n")
+                    id_property = int(input(""))
+                    if (id_property < 1 or id_property > len(property_player) or property_player[
+                        id_property-1].type() != "Property"):
+                        print(" The number you entered is invalid")
+                    else:
+                        property_player[id_property-1].print_information()
+            answer = ""
+            while(answer!="B"):
+                print(" \n \n Do you want to build a house ? \n A - Yes \n B - No")
+                answer = input("")
+                if answer == "A":
+                    pass
+
+
+        print("\n \n This is the end of your turn \n \n")
         print("\n Press enter to continue \n \n")
         answer = input("")
         return None
