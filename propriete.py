@@ -111,7 +111,7 @@ class Luck(Case):
 
 class GoToPrison(Case):
     def __init__(self):
-        super().__init__("Go_to_Prison",30)
+        super().__init__("Go to Prison",30)
 
     def imprison(self,player : Player):
         player.set_position(10)
@@ -175,7 +175,7 @@ class Company(Case):
 
 class TrainStation(Case):
     def __init__(self, name="#", id=0):
-        super().__init__("TrainStation", id)
+        super().__init__("Train Station", id)
         self._name = name
         self._value = 200
         self._owner = 0

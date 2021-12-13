@@ -289,8 +289,11 @@ class Game:
         print(" Properties : \n")
         property_player = self.game_board.list_property(player)
         for i in range(1, len(property_player) + 1):
-            print(" ", i, " - ", property_player[i - 1].name(), " - Number of houses : ", property_player[i - 1].nb_houses(),
-                  "\n")
+            if (property_player[i - 1].type() == "Property"):
+                print(" ", i, " - ", property_player[i - 1].name(), " - Number of houses : ",
+                      property_player[i - 1].nb_houses(), "\n")
+            else:
+                print(" ", i, " - ", property_player[i - 1].name(), "\n")
         print("██████████████████████████████████████████")
         print("\n Press enter to continue \n \n")
         answer = input("")
