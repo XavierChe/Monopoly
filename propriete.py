@@ -1,5 +1,4 @@
 from player import Player
-import Monopoly
 import random
 
 class Case:
@@ -73,7 +72,7 @@ class Luck(Case):
         return "Luck"
 
     def action(self, p : Player):
-        n = random.randint(1,10)
+        n = random.randint(1,6)
         if (n==1):
             print("Allez en prison. Allez tout droit à la prison. Ne passez pas par la case départ, ne reçevez pas 200E.")
             p.set_free(False)
