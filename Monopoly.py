@@ -48,6 +48,14 @@ class Board:
                     self._cases.append(Company(i,"Companie des eaux"))
                 elif (i==28):
                     self._cases.append(Company(i,"Companie d'électricité"))
+                elif (i==5):
+                    self._cases.append(TrainStation("Gare_Montparnasse",i))
+                elif (i==15):
+                    self._cases.append(TrainStation("Gare_de_Lyon",i))
+                elif (i==25):
+                    self._cases.append(TrainStation("Gare_du_Nord",i))
+                elif (i==35):
+                    self._cases.append(TrainStation("Gare_Saint_Lazare", i))
                 else:
                     self._cases.append(properties[c])
                     c+=1
@@ -84,7 +92,7 @@ class Board:
         """retourne la liste des propriétes que possède un joueur"""
         player_properties=[]
         for i in range(1,len(self.cases())):
-            if(self.cases()[i].type() in ["Property","Company"]):
+            if(self.cases()[i].type() in ["Property","Company","TrainStation"]):
                 if (self.is_owned(i) == player.id()):
                     player_properties.append(self.cases()[i])
         return player_properties
@@ -150,7 +158,10 @@ class Game:
         print(" Properties : \n")
         property_player = self.game_board.list_property(player)
         for i in range(1,len(property_player)+1):
-            print(" ", i," - ", property_player[i-1].name(), " - Number of houses : ",property_player[i-1].nb_houses() , "\n")
+            if (property_player[i-1].type()=="Property"):
+                print(" ", i," - ", property_player[i-1].name(), " - Number of houses : ",property_player[i-1].nb_houses() , "\n")
+            else:
+                print(" ", i, " - ", property_player[i - 1].name(), "\n")
         print("██████████████████████████████████████████")
         ## b est un booléen pour déterminer si le joueur peut lancer les dés pour avancer
         b=True
@@ -242,6 +253,34 @@ class Game:
                 else:
                     print(" Free space, you can buy the property \n \n")
                     print(" It costs ",self.game_board.cases()[player.position()].value(), "€", "\n \n")
+                    print(" Do you want to buy it ? \n A- Yes \n B- No")
+                    answer = ""
+                    while (answer != "A" and answer != "B"):
+                        answer = input("")
+                    if answer == "A":
+                        self.game_board.buy_property(player)
+                    else:
+                        pass
+
+            ## Cas Gare ##
+
+            elif(self.game_board.cases()[player.position()].type() == "TrainStation"):
+                print(" You're now on - ", self.game_board.cases()[player.position()].name(), " - \n \n")
+                if (self.game_board.is_owned(player.position()) == player.id()):
+                    print(" Welcome Home !!!")
+                elif self.game_board.is_owned(player.position()) is not None:
+                    id_of_owner = self.game_board.is_owned(player.position())
+                    nb_train_stations_owned=0
+                    for i in range (5,36,10):
+                        if(self.game_board.is_owned(i)==id_of_owner):
+                            nb_train_stations_owned+=1
+                    print(" You must pay a tax to player ", id_of_owner, "\n \n")
+                    print(" It costs ", self.game_board.cases()[player.position()].rent(nb_train_stations_owned), "€", "\n \n")
+                    self.game_board.transaction(player, self.players[id_of_owner],
+                                                self.game_board.cases()[player.position()].rent(nb_train_stations_owned))
+                else:
+                    print(" Free space, you can buy the property \n \n")
+                    print(" It costs ", self.game_board.cases()[player.position()].value(), "€", "\n \n")
                     print(" Do you want to buy it ? \n A- Yes \n B- No")
                     answer = ""
                     while (answer != "A" and answer != "B"):

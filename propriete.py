@@ -173,5 +173,25 @@ class Company(Case):
         self._owner = id
 
 class TrainStation(Case):
-    def __init__(self,id):
-        super().__init__("Train_Station",id)
+    def __init__(self, name="#", id=0):
+        super().__init__("TrainStation", id)
+        self._name = name
+        self._value = 200
+        self._owner = 0
+        # On n'appellera jamais la case 0 de rent, on appellera la case en fonction du nombre de gares possédées par le joueur
+        self._rent = [0,25,50,100,200]
+
+    def name(self):
+        return self._name
+
+    def value(self):
+        return self._value
+
+    def owner(self):
+        return self._owner
+
+    def rent(self,i):
+        return self._rent[i]
+
+    def set_owner(self,id):
+        self._owner=id
