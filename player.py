@@ -2,19 +2,28 @@ class Player:
     _id : int
     _money : int
     _position : int
+    _free : bool
+    _escape_card : int
+    _round_in_prison : int
+    _player_name : str
     
-    def __init__(self, id_num=0, money=200, position=0,free=True,escape=0):
+    def __init__(self, id_num=0, player_name="#", money=1500, position=0,free=True,escape=0,round_in_prison=0):
         self._id = id_num
+        self._player_name=player_name
         self._money = money
         self._position = position
         self._free=free
         self._escape_card=escape
+        self._round_in_prison=round_in_prison
         
     def position(self):
         return self._position
 
     def id(self):
         return self._id
+
+    def name(self):
+        return self._player_name
 
     def money(self):
         return self._money
@@ -24,6 +33,9 @@ class Player:
 
     def escape_card(self):
         return self._escape_card
+
+    def round_in_prison(self):
+        return self._round_in_prison
 
     def set_money(self, money):
         self._money=money
@@ -36,3 +48,6 @@ class Player:
 
     def set_escape_card(self,c):
         self._escape_card=c
+
+    def set_round_in_prison(self,c):
+        self._round_in_prison=c
