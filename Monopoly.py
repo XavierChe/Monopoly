@@ -49,13 +49,13 @@ class Board:
                 elif (i==28):
                     self._cases.append(Company(i,"Companie d'électricité"))
                 elif (i==5):
-                    self._cases.append(TrainStation("Gare_Montparnasse",i))
+                    self._cases.append(TrainStation("Gare Montparnasse",i))
                 elif (i==15):
-                    self._cases.append(TrainStation("Gare_de_Lyon",i))
+                    self._cases.append(TrainStation("Gare de Lyon",i))
                 elif (i==25):
-                    self._cases.append(TrainStation("Gare_du_Nord",i))
+                    self._cases.append(TrainStation("Gare du Nord",i))
                 elif (i==35):
-                    self._cases.append(TrainStation("Gare_Saint_Lazare", i))
+                    self._cases.append(TrainStation("Gare Saint Lazare", i))
                 else:
                     self._cases.append(properties[c])
                     c+=1
@@ -91,7 +91,7 @@ class Board:
         """retourne la liste des propriétes que possède un joueur"""
         player_properties=[]
         for i in range(1,len(self.cases())):
-            if(self.cases()[i].type() in ["Property","Company","TrainStation"]):
+            if(self.cases()[i].type() in ["Property","Company","Train Station"]):
                 if (self.is_owned(i) == player.id()):
                     player_properties.append(self.cases()[i])
         return player_properties
@@ -209,7 +209,7 @@ class Game:
                 print(" You are at the start !!\n")
 
             ## Cas Parc Gratuit ##
-            elif (self.game_board.cases()[player.position()].type() == "Free_Park"):
+            elif (self.game_board.cases()[player.position()].type() == "Free Park"):
                 print(" You're now on - ", self.game_board.cases()[player.position()].type(), " - \n \n")
                 print(" You are at the free park !!\n")
 
@@ -219,7 +219,7 @@ class Game:
                 print(" You are just visiting the prison \n \n")
 
             ## Cas Allez En Prison ##
-            elif (self.game_board.cases()[player.position()].type() == "Go_to_Prison"):
+            elif (self.game_board.cases()[player.position()].type() == "Go to Prison"):
                 print(" You're now on - ", self.game_board.cases()[player.position()].type(), " - \n \n")
                 print(" How unlucky... You're imprisonned...\n")
                 self.game_board.cases()[player.position()].imprison(player)
@@ -236,7 +236,7 @@ class Game:
                 self.game_board.cases()[player.position()].pay(player)
 
             ## Cas Compagnies, Gares et Propriétés ##
-            if (self.game_board.cases()[player.position()].type() in ["Company","TrainStation","Propertiy"]):
+            if (self.game_board.cases()[player.position()].type() in ["Company","Train Station","Property"]):
                 print(" You're now on - ", self.game_board.cases()[player.position()].name(), " - \n \n")
                 if (self.game_board.is_owned(player.position()) == player.id()):
                     print(" Welcome Home !!!")
@@ -254,7 +254,7 @@ class Game:
                             self.game_board.transaction(player, self.players[id_of_owner], 4 * dice_result)
 
                     ## Cas Gare ##
-                    elif(self.game_board.cases()[player.position()].type()=="TrainStation"):
+                    elif(self.game_board.cases()[player.position()].type()=="Train Station"):
                         nb_train_stations_owned = 0
                         for i in range(5, 36, 10):
                             if (self.game_board.is_owned(i) == id_of_owner):
