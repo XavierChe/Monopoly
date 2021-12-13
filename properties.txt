@@ -19,6 +19,5 @@ Rue_la_Fayette 29 280 0 0 100 10
 Avenue_de_Breteuil 31 300 0 0 100 10
 Avenue_Foch 32 300 0 0 100 10
 Boulevard_des_Capucines 34 320 0 0 100 10
-Gare_Saint_Lazare 35 200 0 0 0 0
 Avenue_des_Champs_Elysées 37 350 0 0 100 10
 Rue_de_la_Paix 39 400 0 0 100 10
