@@ -1,23 +1,23 @@
-//name, id, value, owner, nb_houses, price_houses, rent without houses, rent with 1 house, ..., rent with 1 hotel
-Boulevard_de_Belleville 1 60 0 0 50 2 4 6 8 10 12
-Rue_Lecourbe 3 60 0 0 50 2 4 6 8 10 12
-Rue_de_Vaugirard 6 100 0 0 50 5 10 15 20 25 30
-Rue_de_Courcelles 8 100 0 0 50 6 12 18 24 30 36
-Avenue_de_la_Republique 9 120 0 0 50 6 12 18 24 30 36
-Boulevard_de_la_Villette 11 140 0 0 100 10 20 30 40 50 60
-Avenue_de_Neuilly 13 140 0 0 100 10 20 30 40 50 60
-Rue_de_Paradis 14 160 0 0 100 10 20 30 40 50 60
-Avenue_de_Mozart 16 180 0 0 100 10 20 30 40 50 60
-Boulevard_Saint_Michel 18 180 0 0 100 10 20 30 40 50 60
-Place_Pigalle 19 200 0 0 100 10 20 30 40 50 60
-Avenue_Matignon 21 220 0 0 100 10 20 30 40 50 60
-Boulevard_Malesherbes 23 220 0 0 100 10 20 30 40 50 60
-Avenue_Henri_Martin 24 240 0 0 100 10 20 30 40 50 60
-Faubourg_Saint_Honoré 26 260 0 0 100 10 20 30 40 50 60
-Place_de_la_Bourse 27 260 0 0 100 10 20 30 40 50 60
-Rue_la_Fayette 29 280 0 0 100 10 20 30 40 50 60
-Avenue_de_Breteuil 31 300 0 0 100 10 20 30 40 50 60
-Avenue_Foch 32 300 0 0 100 10 20 30 40 50 60
-Boulevard_des_Capucines 34 320 0 0 100 10 20 30 40 50 60
-Avenue_des_Champs_Elysées 37 350 0 0 100 10 20 30 40 50 60
-Rue_de_la_Paix 39 400 0 0 100 10 20 30 40 50 60
+//name, id, id monopole, value, owner, nb_houses, price_houses, rent without houses, rent with 1 house, ..., rent with 1 hotel
+Boulevard_de_Belleville 1 0 60 0 0 50 2 4 6 8 10 12
+Rue_Lecourbe 3 1 60 0 0 50 2 4 6 8 10 12
+Rue_de_Vaugirard 6 2 100 0 0 50 5 10 15 20 25 30
+Rue_de_Courcelles 8 2 100 0 0 50 6 12 18 24 30 36
+Avenue_de_la_Republique 9 2 120 0 0 50 6 12 18 24 30 36
+Boulevard_de_la_Villette 11 3 140 0 0 100 10 20 30 40 50 60
+Avenue_de_Neuilly 13 3 140 0 0 100 10 20 30 40 50 60
+Rue_de_Paradis 14 3 160 0 0 100 10 20 30 40 50 60
+Avenue_de_Mozart 16 4 180 0 0 100 10 20 30 40 50 60
+Boulevard_Saint_Michel 18 4 180 0 0 100 10 20 30 40 50 60
+Place_Pigalle 19 4 200 0 0 100 10 20 30 40 50 60
+Avenue_Matignon 21 5 220 0 0 100 10 20 30 40 50 60
+Boulevard_Malesherbes 23 5 220 0 0 100 10 20 30 40 50 60
+Avenue_Henri_Martin 24 5 240 0 0 100 10 20 30 40 50 60
+Faubourg_Saint_Honoré 26 6 260 0 0 100 10 20 30 40 50 60
+Place_de_la_Bourse 27 6 260 0 0 100 10 20 30 40 50 60
+Rue_la_Fayette 29 6 280 0 0 100 10 20 30 40 50 60
+Avenue_de_Breteuil 31 7 300 0 0 100 10 20 30 40 50 60
+Avenue_Foch 32 7 300 0 0 100 10 20 30 40 50 60
+Boulevard_des_Capucines 34 7 320 0 0 100 10 20 30 40 50 60
+Avenue_des_Champs_Elysées 37 8 350 0 0 100 10 20 30 40 50 60
+Rue_de_la_Paix 39 8 400 0 0 100 10 20 30 40 50 60

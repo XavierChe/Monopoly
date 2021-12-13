@@ -29,18 +29,22 @@ class Property(Case):
     #Prix à payer si pas proprio
     _rent: list
 
-    def __init__(self,name="#",id=0,value=0,owner=0,nb_houses=0,price_houses=0,rent=[0]*6):
+    def __init__(self,name="#",id=0, monopole_id=0, value=0,owner=0,nb_houses=0,price_houses=0,rent=[0]*6):
         super().__init__("Property",id)
         self._name = name.replace("_"," ")
+        self._monopole_id = monopole_id
         self._value = value
         self._owner = owner
         self._nb_houses = nb_houses
         self._price_houses = price_houses
         self._rent = rent
-
+        
     # ===   Accesseurs   ===
     def name(self):
         return self._name
+    
+    def monopole_id(self):
+        return self._monopole_id
 
     def value(self):
         return self._value
@@ -89,9 +93,9 @@ class Luck(Case):
             p.set_position(39)
         if (n==3):
             print(" Rendez-vous Avenue Henri Martin. Si vous passez par la case départ, recevez 200€.\n")
-            if(p.position()>16):
+            if(p.position()>24):
                 p.set_money(p.money()+200)
-            p.set_position(16)
+            p.set_position(24)
         if (n==4):
             print(" Rendez-vous case Départ. Recevez 400€.\n")
             p.set_position(0)
