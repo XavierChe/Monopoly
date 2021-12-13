@@ -86,6 +86,14 @@ class Board:
             return None
         else:
             return potential_owner
+        
+    def ids_same_monopole(self, id_mono):
+        ids = []
+        cases = self.cases()
+        for i in range(len(cases)):
+            if cases[i].type() == "Property" and cases[i].monopole_id() == id_mono:
+                ids.append(cases[i].id())
+        return ids
 
     def list_property(self, player: Player):
         """retourne la liste des propriétes que possède un joueur"""
