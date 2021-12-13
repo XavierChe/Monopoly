@@ -115,8 +115,12 @@ class Game:
             print("\n \n \n #### BEGINNING OF THE DEBUG SESSION #### \n \n \n")
             answer = input("")
             aff.clear_console()
-            self.players = [0,Player(1),Player(2)]
-            self.game_board = Board(True)
+            self.players = [0]
+            for i in range(1, nb_players + 1):
+                print(" Write the name of the player created : \n ")
+                player_name = input("")
+                self.players.append(Player(i, player_name))
+            self.game_board = Board(False)
         else:
             aff.clear_console()
             self.players = [0]
@@ -321,7 +325,41 @@ class Game:
                 print(" \n \n Do you want to build a house ? \n A - Yes \n B - No")
                 answer = input("")
                 if answer == "A":
-                    pass
+                    print(" \n Which property ? Enter the id diplayed in the recap : \n \n")
+                    id_property = int(input(""))
+                    if (id_property < 1 or id_property > len(property_player) or property_player[
+                        id_property - 1].type() != "Property"):
+                        print(" The number you entered is invalid")
+                    else:
+                        ids_monopole=self.game_board.ids_same_monopole(property_player[id_property-1].monopole_id())
+                        size_monopole=len(ids_monopole)
+                        if(size_monopole==2):
+                            if(self.game_board.is_owned(ids_monopole[0])==self.game_board.is_owned(ids_monopole[1])):
+                                price_house = self.game_board.cases()[
+                                    property_player[id_property - 1].id()].price_houses()
+                                if (player.money()<price_house):
+                                    print("\n You don't have enough money to build a house \n")
+                                else:
+                                    former_nb_houses = self.game_board.cases()[property_player[id_property - 1].id()]
+                                    self.game_board.cases()[property_player[id_property - 1].id()].set_nb_houses(
+                                        former_nb_houses + 1)
+                                    player.set_money(player.money() - price_house)
+
+                            else:
+                                print(" \n You have to own the whole monopole to build a house. \n")
+                        else:
+                            if(self.game_board.is_owned(ids_monopole[0])==self.game_board.is_owned(ids_monopole[1]) and self.game_board.is_owned(ids_monopole[1])==self.game_board.is_owned(ids_monopole[2])):
+                                price_house = self.game_board.cases()[
+                                    property_player[id_property - 1].id()].price_houses()
+                                if (player.money() < price_house):
+                                    print("\n You don't have enough money to build a house \n")
+                                else:
+                                    former_nb_houses = self.game_board.cases()[property_player[id_property - 1].id()]
+                                    self.game_board.cases()[property_player[id_property - 1].id()].set_nb_houses(
+                                        former_nb_houses + 1)
+                                    player.set_money(player.money() - price_house)
+                            else:
+                                print(" \n You have to own the whole monopole to build a house. \n")
 
 
         print("\n \n This is the end of your turn \n \n")
