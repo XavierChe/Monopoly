@@ -10,11 +10,11 @@ def read_properties(file):
     split_lines = []
     for i in range(1,len(lines)):
         split_lines.append(lines[i].split(" "))
-        for j in range(1,6):
+        for j in range(1,7):
             split_lines[len(split_lines)-1][j] = int(split_lines[len(split_lines)-1][j])
-        split_lines[len(split_lines)-1][6] = [int(split_lines[len(split_lines)-1][i]) for i in range(6,12)]
+        split_lines[len(split_lines)-1][7] = [int(split_lines[len(split_lines)-1][i]) for i in range(7,12)]
     for i in range(len(split_lines)):
-        list_properties.append(Property(*split_lines[i][:7]))
+        list_properties.append(Property(*split_lines[i][:8]))
     return list_properties
 
 class Board:

@@ -68,12 +68,12 @@ class Property(Case):
         self._nb_houses=n
 
     def print_information(self):
-        print("\n Name of the property : ", self._name, "\n")
-        print("\n Price of a house : ",self._price_houses, "\n")
-        print("\n Number of houses : ", self._nb_houses, "\n")
+        print("\n Name of the property : ", self._name)
+        print("\n Price of a house : ",self._price_houses)
+        print("\n Number of houses : ", self._nb_houses)
         for i in range(5):
-            print("\n Price of the rent with : ", i, "houses : ", self._rent[i], "\n")
-        print("\n Price of the rent with a hotel : ", self._rent[5], "\n")
+            print("\n Price of the rent with : ", i, "houses : ", self._rent[i])
+        print("\n Price of the rent with a hotel : ", self._rent[5])
 
 
 class Luck(Case):
