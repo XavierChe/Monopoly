@@ -1,5 +1,5 @@
 //name, id, id monopole, value, owner, nb_houses, price_houses, rent without houses, rent with 1 house, ..., rent with 1 hotel
-Boulevard_de_Belleville 1 0 60 0 0 50 2 4 6 8 10 12
+Boulevard_de_Belleville 1 1 60 0 0 50 2 4 6 8 10 12
 Rue_Lecourbe 3 1 60 0 0 50 2 4 6 8 10 12
 Rue_de_Vaugirard 6 2 100 0 0 50 5 10 15 20 25 30
 Rue_de_Courcelles 8 2 100 0 0 50 6 12 18 24 30 36
