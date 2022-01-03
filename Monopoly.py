@@ -4,17 +4,18 @@ from propriete import *
 from player import *
 
 def read_properties(file):
+    """Prend en entrée un fichier qui contient les informations des propriétés, renvoie une liste de Properties initialisées à l'aide du fichier"""
     list_properties = []
     with open(file, "r") as f:
         lines = f.readlines()
     split_lines = []
     for i in range(1,len(lines)):
-        split_lines.append(lines[i].split(" "))
+        split_lines.append(lines[i].split(" ")) #On découpe les lignes du fichier (pour séparer les attributs) pour pouvoir définir les différentes propriétés
         for j in range(1,7):
-            split_lines[len(split_lines)-1][j] = int(split_lines[len(split_lines)-1][j])
-        split_lines[len(split_lines)-1][7] = [int(split_lines[len(split_lines)-1][i]) for i in range(7,13)]
+            split_lines[len(split_lines)-1][j] = int(split_lines[len(split_lines)-1][j]) #Conversion en entiers des champs qui doivent être entiers (prix de la propriété, ...)
+        split_lines[len(split_lines)-1][7] = [int(split_lines[len(split_lines)-1][i]) for i in range(7,13)] #Création de la liste des différents loyers
     for i in range(len(split_lines)):
-        list_properties.append(Property(*split_lines[i][:8]))
+        list_properties.append(Property(*split_lines[i][:8])) #Initialisation de chaque propriété avec les informations données dans le fichier
     return list_properties
 
 class Board:
@@ -127,8 +128,6 @@ class Board:
             value=self.cases()[id_property].value()
             player.set_money(player.money()+value)
             print(" \n \n You earned ", value, "€ \n \n")
-
-
 
 class Game:
     def __init__(self, debug=False,nb_players = 2):
@@ -569,7 +568,6 @@ class Game:
                     pass
                 else :
                     print(" You entered an incorrect answer \n \n")
-
 
         print("\n \n This is the end of your turn \n \n")
         print("\n Press enter to continue \n \n")
