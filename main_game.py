@@ -15,7 +15,6 @@ from pygame.locals import *
 #======================================================================================================================
 
 
-
 # INITIALISATION OF PYGAME          /!\ IMPORTANT
 pygame.init()
 
@@ -37,7 +36,7 @@ blue = (0, 0, 255)
 yellow = (255, 255, 0)
 
 
-class Game_graphical ():
+class Game_graphical():
     def __init__(self,screen_width, screen_height):
         self.main_screen = pygame.display.set_mode((screen_width,screen_height))
         self.width = screen_width
@@ -95,7 +94,7 @@ class Game_graphical ():
     def run_choose_your_character(self):
         """ choose the number of players
         -> return 2, 3, or 4 for the number of player
-        -> return -1 for if echap
+        -> return -1 if echap
         -> return 0 if quit
         """
         play : bool = True
@@ -202,9 +201,10 @@ class Game_graphical ():
                 self.enter_player_names(nb_players)
                 return nb_players
             elif nb_players == 0:
-                self.end_game()
+                self.end_game(-1)
             else:
                 return self.begin_game()
+            
 
 
 
@@ -214,7 +214,27 @@ class Game_graphical ():
 
 
     # END OF THE GAME
-    def end_game(self):
+    def end_game(self, winning_player):
+        end_screen = pygame.image.load('pictures/end_screen.jpg')
+        end_screen = end_screen.convert()
+        play = (winning_player != -1)
+        while play:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    play = False
+                if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_RETURN:
+                        play = False
+            
+            self.main_screen.fill(pygame.Color("white"))
+            self.main_screen.blit(end_screen, (0, 0))
+            text_winner = text_format("Player "+str(winning_player)+" wins!", 50, black)
+            text_winner_rect = text_winner.get_rect()
+            text_continue = text_format("Press Enter to close", 50, black)
+            text_continue_rect = text_continue.get_rect()
+            self.main_screen.blit(text_winner,(self.width/2 - (text_winner_rect[2]/2), self.height/2 + 200))
+            self.main_screen.blit(text_continue,(self.width/2 - (text_continue_rect[2]/2), self.height/2 + 300))
+            pygame.display.update()
         pygame.quit()
 
 
@@ -233,4 +253,4 @@ class Game_graphical ():
 # TEST
 game = Game_graphical(1021,1021)
 nb_player = game.begin_game()
-game.end_game()
+game.end_game(-1)

@@ -2,6 +2,7 @@ from __future__ import division
 from pyglet.window import key
 import pyglet
 from pyglet import shapes
+
 width = 600
 height = 600
 window = pyglet.window.Window(visible=True, fullscreen=True, caption='Monopoly')
