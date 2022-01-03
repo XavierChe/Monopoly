@@ -394,58 +394,68 @@ class Game:
 
         if (len(property_player)>0):
 
-            ## Affichage informations ##
+            ## Actions joueur ##
             answer = ""
-            while (answer != "B"):
-                print("\n \n Do you want to display information about one of your properties ? (Does not work for train stations or companies) \n A- Yes \n B- No")
-                answer = input("")
-                if answer == "A":
-                    print(" \n Which property ? Enter the id diplayed in the recap : \n \n")
+            while(answer != 6):
+                print("\n \n Select the action you want to make : \n \n"
+                      " 1 - Display information about one of your properties (Does not work for train stations or companies \n \n"
+                      " 2 - Build a house \n \n"
+                      " 3 - Sell a house \n \n"
+                      " 4 - Display information about the properties of another player \n \n"
+                      " 5 - Make an offer to another player \n \n"
+                      " 6 - End your turn \n \n")
+                answer=int(input(""))
+
+                ## Affichage informations ##
+                if(answer==1):
+                    self.display_properties(property_player)
+                    print(" \n Which property do you want the information to be displayed ? Enter the id diplayed above : \n \n")
                     id_property = int(input(""))
                     if (id_property < 1 or id_property > len(property_player) or property_player[
-                        id_property-1].type() != "Property"):
+                        id_property - 1].type() != "Property"):
                         print(" The number you entered is invalid")
                     else:
-                        property_player[id_property-1].print_information()
+                        property_player[id_property - 1].print_information()
 
-            ## Construction maison ##
-            answer = ""
-            while(answer!="B"):
-                print(" \n \n Do you want to build a house ? \n A - Yes \n B - No")
-                answer = input("")
-                if answer == "A":
+                ## Construction maison ##
+                elif(answer==2):
                     self.display_properties(property_player)
-                    print(" \n Which property ? Enter the id diplayed above : \n \n")
+                    print(" \n On which property do you want to build a house ? Enter the id diplayed above : \n \n")
                     id_property = int(input(""))
                     if (id_property < 1 or id_property > len(property_player) or property_player[
                         id_property - 1].type() != "Property"):
                         print("\n The number you entered is invalid")
                     else:
-                        ids_monopole=self.game_board.ids_same_monopole(property_player[id_property-1].monopole_id())
-                        size_monopole=len(ids_monopole)
-                        if(size_monopole==2):
-                            if(self.game_board.is_owned(ids_monopole[0])==self.game_board.is_owned(ids_monopole[1])):
-                                price_house = self.game_board.cases()[
-                                    property_player[id_property - 1].id()].price_houses()
-                                if (player.money()<price_house):
-                                    print("\n You don't have enough money to build a house \n")
-                                else:
-                                    former_nb_houses = self.game_board.cases()[property_player[id_property - 1].id()].nb_houses()
-                                    self.game_board.cases()[property_player[id_property - 1].id()].set_nb_houses(
-                                        former_nb_houses + 1)
-                                    player.set_money(player.money() - price_house)
-                                    print(" \n \n You've builed a house on ",self.game_board.cases()[property_player[id_property-1].id()].name())
-
-                            else:
-                                print(" \n You have to own the whole monopole to build a house. \n")
-                        else:
-                            if(self.game_board.is_owned(ids_monopole[0])==self.game_board.is_owned(ids_monopole[1]) and self.game_board.is_owned(ids_monopole[1])==self.game_board.is_owned(ids_monopole[2])):
+                        ids_monopole = self.game_board.ids_same_monopole(property_player[id_property - 1].monopole_id())
+                        size_monopole = len(ids_monopole)
+                        if (size_monopole == 2):
+                            if (self.game_board.is_owned(ids_monopole[0]) == self.game_board.is_owned(ids_monopole[1])):
                                 price_house = self.game_board.cases()[
                                     property_player[id_property - 1].id()].price_houses()
                                 if (player.money() < price_house):
                                     print("\n You don't have enough money to build a house \n")
                                 else:
-                                    former_nb_houses = self.game_board.cases()[property_player[id_property - 1].id()].nb_houses()
+                                    former_nb_houses = self.game_board.cases()[
+                                        property_player[id_property - 1].id()].nb_houses()
+                                    self.game_board.cases()[property_player[id_property - 1].id()].set_nb_houses(
+                                        former_nb_houses + 1)
+                                    player.set_money(player.money() - price_house)
+                                    print(" \n \n You've builed a house on ",
+                                          self.game_board.cases()[property_player[id_property - 1].id()].name())
+
+                            else:
+                                print(" \n You have to own the whole monopole to build a house. \n")
+                        else:
+                            if (self.game_board.is_owned(ids_monopole[0]) == self.game_board.is_owned(
+                                    ids_monopole[1]) and self.game_board.is_owned(
+                                    ids_monopole[1]) == self.game_board.is_owned(ids_monopole[2])):
+                                price_house = self.game_board.cases()[
+                                    property_player[id_property - 1].id()].price_houses()
+                                if (player.money() < price_house):
+                                    print("\n You don't have enough money to build a house \n")
+                                else:
+                                    former_nb_houses = self.game_board.cases()[
+                                        property_player[id_property - 1].id()].nb_houses()
                                     self.game_board.cases()[property_player[id_property - 1].id()].set_nb_houses(
                                         former_nb_houses + 1)
                                     player.set_money(player.money() - price_house)
@@ -454,19 +464,16 @@ class Game:
                             else:
                                 print(" \n You have to own the whole monopole to build a house. \n")
 
-            ## Vente maison ##
-            answer = ""
-            while (answer != "B"):
-                print(" \n \n Do you want to sell a house ? \n A - Yes \n B - No")
-                answer = input("")
-                if answer == "A":
-                    print(" \n On which property ? Enter the id diplayed in the recap : \n \n")
+                ## Vente maison ##
+                elif (answer == 3):
+                    print(
+                        " \n On which property do you want to sell a house ? Enter the id diplayed in the recap : \n \n")
                     id_property = int(input(""))
                     if (id_property < 1 or id_property > len(property_player) or property_player[
                         id_property - 1].type() != "Property"):
                         print("\n The number you entered is invalid")
                     else:
-                        if(self.game_board.cases()[property_player[id_property - 1].id()].nb_houses()==0):
+                        if (self.game_board.cases()[property_player[id_property - 1].id()].nb_houses() == 0):
                             print("\n You don't have any house on this property. \n \n")
                         else:
                             price_house = self.game_board.cases()[
@@ -478,24 +485,20 @@ class Game:
                             player.set_money(player.money() + price_house)
                             print(" You earned ", price_house, "€ \n \n")
 
-            ## Affichage informations propriétés autres joueurs ##
-            answer = ""
-            while (answer != "B"):
-                print("\n \n Do you want to display information about the properties of another player ? \n A- Yes \n B- No")
-                answer = input("")
-                if answer == "A":
+                ## Affichage informations propriétés autre joueur ##
+                elif (answer == 4):
                     print("\n Write the name of the player whose property you want to see : \n \n")
                     player_name = input("")
-                    id_player=self.find_player(player_name)
-                    if(id_player==0):
+                    id_player = self.find_player(player_name)
+                    if (id_player == 0):
                         print("\n The player you entered does not exist. \n \n")
                     else:
-                        seller_properties=self.game_board.list_property(self.players[id_player])
-                        if(len(seller_properties)==0):
+                        seller_properties = self.game_board.list_property(self.players[id_player])
+                        if (len(seller_properties) == 0):
                             print("\n This player you chose does not have any property. \n \n")
                         else:
                             self.display_properties(seller_properties)
-                            answer2=""
+                            answer2 = ""
                             while (answer2 != "B"):
                                 print(
                                     "\n \n Do you want to display information about one of those properties ? (Does not work for train stations or companies) \n A- Yes \n B- No")
@@ -508,13 +511,7 @@ class Game:
                                         print("\n The number you entered is invalid")
                                     else:
                                         seller_properties[id_property - 1].print_information()
-
-            ## Offre d'échange de propriété ##
-            answer=""
-            while (answer != "B"):
-                print("\n \n Do you want to make an offer to another player ? \n A- Yes \n B- No")
-                answer = input("")
-                if answer == "A":
+                elif (answer == 5):
                     print("\n Write the name of the player to whome you want to make an offer : \n \n")
                     player_name = input("")
                     id_seller = self.find_player(player_name)
@@ -531,7 +528,8 @@ class Game:
                             id_seller_property = int(input(""))
                             if (id_seller_property < 1 or id_seller_property > len(seller_properties)):
                                 print("\n The number you entered is invalid")
-                            elif(self.game_board.houses_on_monopole(seller_properties[id_seller_property-1].id())>0):
+                            elif (self.game_board.houses_on_monopole(
+                                    seller_properties[id_seller_property - 1].id()) > 0):
                                 print("\n \n You can't buy a house in a monopole where some houses are built \n \n")
                             else:
                                 self.display_properties(property_player)
@@ -542,11 +540,12 @@ class Game:
                                     print("\n The number you entered is invalid \n \n")
                                 elif (self.game_board.houses_on_monopole(
                                         property_player[id_seller_property - 1].id()) > 0):
-                                    print("\n \n You can't sell a house in a monopole where some houses are built \n \n")
+                                    print(
+                                        "\n \n You can't sell a house in a monopole where some houses are built \n \n")
                                 else:
                                     print("\n How much do you offer for the exchange ? \n \n")
-                                    price_offer=int(input(""))
-                                    if(player.money()<price_offer):
+                                    price_offer = int(input(""))
+                                    if (player.money() < price_offer):
                                         print(" \n \n You don't have enough money to make such an offer \n \n")
                                     else:
                                         print(
@@ -560,18 +559,16 @@ class Game:
                                             self.exchange_properties(player.id(), id_seller, price_offer,
                                                                      property_player[id_buyer_property - 1].id(),
                                                                      seller_properties[id_seller_property - 1].id())
-                                            property_player=self.game_board.list_property(player)
+                                            property_player = self.game_board.list_property(player)
                                             print(" \n \n The exchange took place ! \n \n")
-                                        elif(answer2=="B"):
+                                        elif (answer2 == "B"):
                                             print("\n \n The offer was refused. \n \n")
                                         else:
                                             print(" \n \n You entered an incorrect answer \n \n")
-
-
-
-
-
-
+                elif (answer == 6):
+                    pass
+                else :
+                    print(" You entered an incorrect answer \n \n")
 
 
         print("\n \n This is the end of your turn \n \n")
@@ -590,7 +587,7 @@ class Game:
 if __name__ == '__main__':
     print("\n \n Choose the number of players \n \n")
     nb_players=int(input(""))
-    while(nb_players<1):
+    while(nb_players<2):
         print("\n \n You have to enter a number higher than 1 \n \n")
         print("\n \n Choose the number of players \n \n")
         nb_players = int(input(""))
