@@ -1,4 +1,7 @@
 import pygame
+import text_input as input
+from text_input import text_format
+from time import sleep
 import pyglet
 import pyscroll
 import pytmx
@@ -21,10 +24,7 @@ pygame.init()
 
 
 # Text Renderer
-def text_format(message, textSize, textColor):
-    newFont = pygame.font.SysFont(None, textSize)
-    newText = newFont.render(message, True, textColor)
-    return newText
+
 
 
 # Colors
@@ -74,11 +74,11 @@ class Game_graphical ():
                         play = False
                         game_on = False
             if selected == "start":
-                text_start = text_format("New Game", 50, red)
-                text_quit = text_format("Quit", 50, black)
+                text_start = text_format("New Game", 30, red)
+                text_quit = text_format("Quit", 30, black)
             if selected == "quit":
-                text_start = text_format("New Game", 50, black)
-                text_quit = text_format("Quit", 50, red)
+                text_start = text_format("New Game", 30, black)
+                text_quit = text_format("Quit", 30, red)
             start_rect = text_start.get_rect()
             quit_rect = text_quit.get_rect()
             self.main_screen.fill(pygame.Color("white"))
@@ -126,17 +126,17 @@ class Game_graphical ():
                         play = False
                         nb_players = -1
             if selection_cursor == 0:
-                player2 = text_format("2 players",50,red)
-                player3 = text_format("3 players", 50, black)
-                player4 = text_format("4 players", 50, black)
+                player2 = text_format("2 players",30,red)
+                player3 = text_format("3 players", 30, black)
+                player4 = text_format("4 players", 30, black)
             if selection_cursor == 1:
-                player2 = text_format("2 players",50,black)
-                player3 = text_format("3 players", 50, red)
-                player4 = text_format("4 players", 50, black)
+                player2 = text_format("2 players",30,black)
+                player3 = text_format("3 players", 30, red)
+                player4 = text_format("4 players", 30, black)
             if selection_cursor == 2:
-                player2 = text_format("2 players",50,black)
-                player3 = text_format("3 players", 50, black)
-                player4 = text_format("4 players", 50, red)
+                player2 = text_format("2 players",30,black)
+                player3 = text_format("3 players", 30, black)
+                player4 = text_format("4 players", 30, red)
             player2_rect = player2.get_rect()
             player3_rect = player3.get_rect()
             player4_rect = player4.get_rect()
@@ -153,9 +153,14 @@ class Game_graphical ():
     def enter_player_names (self, nb_player):
         title_screen = pygame.image.load('pictures/title_screen.jpg')
         title_screen = title_screen.convert()
+        name_1 = ""
+        name_2 = ""
+        name_3 = ""
+        name_4 = ""
         play : bool = True
         exit = -1
         while play:
+            end_signal = False
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     play = False
@@ -165,32 +170,55 @@ class Game_graphical ():
                         exit = 0
             self.main_screen.fill(pygame.Color("white"))
             self.main_screen.blit(title_screen, (0, 0))
-            text_player1 = text_format("Player 1", 40, black)
-            text_player2 = text_format("Player 2", 40, black)
-            text_player3 = text_format("Player 3", 40, black)
-            text_player4 = text_format("Player 4", 40, black)
-            text_player1_rect = text_player1.get_rect()
-            text_player2_rect = text_player2.get_rect()
-            text_player3_rect = text_player3.get_rect()
-            text_player4_rect = text_player4.get_rect()
-            if (nb_player >= 2):
-                self.main_screen.blit(text_player1,(self.width/2, self.height/2))
-                self.main_screen.blit(text_player2, (self.width / 2, self.height / 2 + 70))
-                pygame.draw.circle(self.main_screen,red,(self.width/2 - (text_player1_rect[2]), self.height/2 + (text_player1_rect[3]/2)),20)
-                pygame.draw.circle(self.main_screen, green, (self.width / 2 - (text_player2_rect[2]), self.height / 2 + 70 + (text_player2_rect[3]/2)), 20)
-            if (nb_player >= 3):
-                self.main_screen.blit(text_player3, (self.width / 2, self.height / 2 + 140))
-                pygame.draw.circle(self.main_screen, yellow, (self.width / 2 - (text_player3_rect[2]), self.height / 2 + 140 + (text_player3_rect[3]/2)), 20)
-            if (nb_player >= 4):
-                self.main_screen.blit(text_player4, (self.width / 2, self.height / 2 + 210))
-                pygame.draw.circle(self.main_screen, blue, (self.width / 2 - (text_player4_rect[2]), self.height / 2 + 210 + (text_player4_rect[3]/2)), 20)
-            text_continue = text_format("Press Enter to continue", 50, black)
+            text_continue = text_format("Write your names & press Enter to continue", 30, black)
             text_continue_rect = text_continue.get_rect()
             self.main_screen.blit(text_continue,(self.width/2 - (text_continue_rect[2]/2), self.height/2 + 300))
+
+            text_player1 = input.Text_input_box(200,40,self.width/2,self.height/2,screen=self.main_screen)
+            text_player2 = input.Text_input_box(200,40,self.width/2,self.height/2 + 70,screen=self.main_screen)
+            text_player3 = input.Text_input_box(200,40,self.width/2,self.height/2 + 140,screen=self.main_screen)
+            text_player4 = input.Text_input_box(200,40,self.width/2,self.height/2 + 210,screen=self.main_screen)
+            pygame.draw.circle(self.main_screen, red, (
+                self.width / 2 - 80, self.height / 2 + 20), 20)
+            pygame.draw.circle(self.main_screen, green, (
+                self.width / 2 - 80, self.height / 2 + 90), 20)
+            if (nb_player >= 3):
+                pygame.draw.circle(self.main_screen, blue, (
+                    self.width / 2 - 80, self.height / 2 + 160), 20)
+            if (nb_player >= 4):
+                pygame.draw.circle(self.main_screen, yellow, (
+                    self.width / 2 - 80, self.height / 2 + 230), 20)
+            if (nb_player >= 2 and name_1 ==""):
+                name_1 = text_player1.show_box()
+                name_2 = text_player2.show_box()
+                if(nb_player == 2):
+                    end_signal = True
+            if (nb_player >= 3 and name_3 == ""):
+                name_3 = text_player3.show_box()
+                if(nb_player == 3):
+                    end_signal = True
+            if (nb_player >= 4 and name_4 == ""):
+                name_4 = text_player4.show_box()
+                end_signal = True
+
+            if (end_signal):
+                text_wait = text_format("Amazing, the game will start in 5 seconds...", 20, black)
+                text_wait_rect = text_wait.get_rect()
+                self.main_screen.blit(text_wait,
+                                      (self.width / 2 - (text_wait_rect[2] / 2), self.height / 2 + 350))
+                pygame.display.update()
+                sleep(5)
+                play = False
+                exit = 0
             pygame.display.update()
         self.main_screen.fill(pygame.Color("white"))
         pygame.display.update()
-        return exit
+        exit_var = [exit, name_1, name_2]
+        if nb_player >= 3:
+            exit_var.append(name_3)
+        if nb_player >= 4:
+            exit_var.append(name_4)
+        return exit_var
 
     def begin_game(self):
         """Première partie du programme graphique. Menu principal + choix du nombre de joueurs
@@ -199,8 +227,8 @@ class Game_graphical ():
         if exit_condition != -1:
             nb_players = game.run_choose_your_character()
             if nb_players != -1:
-                self.enter_player_names(nb_players)
-                return nb_players
+                exit_var = self.enter_player_names(nb_players)
+                return exit_var
             elif nb_players == 0:
                 self.end_game()
             else:
