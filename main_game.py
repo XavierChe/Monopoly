@@ -2,9 +2,6 @@ import pygame
 import text_input as input
 from text_input import text_format
 from time import sleep
-import pyglet
-import pyscroll
-import pytmx
 from pygame.locals import *
 
 
@@ -150,6 +147,10 @@ class Game_graphical():
         return nb_players
 
     def enter_player_names (self, nb_player):
+        """
+        :param nb_player: the number of player
+        :return: -1 if exit, 0 if everything is ok
+        """
         title_screen = pygame.image.load('pictures/title_screen.jpg')
         title_screen = title_screen.convert()
         name_1 = ""
@@ -163,10 +164,6 @@ class Game_graphical():
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     play = False
-                if event.type == pygame.KEYDOWN:
-                    if event.key == pygame.K_RETURN:
-                        play = False
-                        exit = 0
             self.main_screen.fill(pygame.Color("white"))
             self.main_screen.blit(title_screen, (0, 0))
             text_continue = text_format("Write your names & press Enter to continue", 30, black)
@@ -229,12 +226,13 @@ class Game_graphical():
                 exit_var = self.enter_player_names(nb_players)
                 return exit_var
             elif nb_players == 0:
-                self.end_game(-1)
+                self.end_pygame()
+                return ([-1])
             else:
                 return self.begin_game()
-            
-
-
+        else:
+            self.end_pygame()
+            return ([-1])
 
     # MAIN LOOP OF THE GAME
     pass
@@ -263,7 +261,31 @@ class Game_graphical():
             self.main_screen.blit(text_winner,(self.width/2 - (text_winner_rect[2]/2), self.height/2 + 200))
             self.main_screen.blit(text_continue,(self.width/2 - (text_continue_rect[2]/2), self.height/2 + 300))
             pygame.display.update()
+        self.end_pygame()
+
+    def end_pygame(self):
         pygame.quit()
+
+
+#======================================================================================================================
+#======================================================================================================================
+#======================================================================================================================
+#======================================================================================================================
+#======================================================================================================================
+#======================================================================================================================
+#======================================================================================================================
+#======================================================================================================================
+
+
+def report_begin_game(g_var):
+    print("DEBUG REPORT BEGIN GAME ------- MONOPOLY")
+    print("========================================")
+    print("Paramètres d'initialisation de la partie")
+    print("Nombre de joueurs : ", len(g_var) - 1)
+    print("Nom des joueurs :")
+    for i in range(1, len(g_var)):
+        print("-  ", g_var[i])
+    print("========================================")
 
 
 
@@ -280,5 +302,6 @@ class Game_graphical():
 
 # TEST
 game = Game_graphical(1021,1021)
-nb_player = game.begin_game()
-game.end_game(-1)
+game_var = game.begin_game()
+report_begin_game(game_var)
+game.end_pygame()
