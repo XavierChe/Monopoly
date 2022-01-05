@@ -1,7 +1,7 @@
 import pygame
 import pyglet
-import pyscroll
-import pytmx
+#import pyscroll
+#import pytmx
 from pygame.locals import *
 
 
