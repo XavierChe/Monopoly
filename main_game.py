@@ -34,10 +34,9 @@ yellow = (255, 255, 0)
 
 
 class Game_graphical():
-    def __init__(self,screen_width, screen_height):
-        self.main_screen = pygame.display.set_mode((screen_width,screen_height))
-        self.width = screen_width
-        self.height = screen_height
+    def __init__(self):
+        self.main_screen = pygame.display.set_mode((0,0),pygame.FULLSCREEN)
+        self.width, self.height  = self.main_screen.get_size()
 
     # BEGINNING OF THE GAME : MAIN MENU AND PLAYER SELECTION
     def run_main_menu(self):
@@ -50,6 +49,7 @@ class Game_graphical():
         game_on = True
         title_screen = pygame.image.load('pictures/title_screen.jpg')
         title_screen = title_screen.convert()
+        picture_width, picture_height = title_screen.get_size()
         while play:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
@@ -78,7 +78,7 @@ class Game_graphical():
             start_rect = text_start.get_rect()
             quit_rect = text_quit.get_rect()
             self.main_screen.fill(pygame.Color("white"))
-            self.main_screen.blit(title_screen, (0, 0))
+            self.main_screen.blit(title_screen, (self.width/2 - picture_width/2, self.height/2 - picture_height/2))
             self.main_screen.blit(text_start,(self.width/2 - (start_rect[2]/2), self.height/2))
             self.main_screen.blit(text_quit,(self.width/2 - (quit_rect[2]/2), self.height/2 + 100))
             pygame.display.update()
@@ -99,6 +99,7 @@ class Game_graphical():
         nb_players = -1
         title_screen = pygame.image.load('pictures/title_screen.jpg')
         title_screen = title_screen.convert()
+        picture_width, picture_height = title_screen.get_size()
         while play:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
@@ -137,7 +138,7 @@ class Game_graphical():
             player3_rect = player3.get_rect()
             player4_rect = player4.get_rect()
             self.main_screen.fill(pygame.Color("white"))
-            self.main_screen.blit(title_screen, (0, 0))
+            self.main_screen.blit(title_screen, (self.width/2 - picture_width/2, self.height/2 - picture_height/2))
             self.main_screen.blit(player2,(self.width/2 - (player2_rect[2]/2), self.height/2))
             self.main_screen.blit(player3,(self.width/2 - (player3_rect[2]/2), self.height/2 + 100))
             self.main_screen.blit(player4,(self.width/2 - (player4_rect[2]/2), self.height/2+ 200))
@@ -153,6 +154,7 @@ class Game_graphical():
         """
         title_screen = pygame.image.load('pictures/title_screen.jpg')
         title_screen = title_screen.convert()
+        picture_width, picture_height = title_screen.get_size()
         name_1 = ""
         name_2 = ""
         name_3 = ""
@@ -164,8 +166,12 @@ class Game_graphical():
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     play = False
+                if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_ESCAPE:
+                        play = False
+                        exit = -2
             self.main_screen.fill(pygame.Color("white"))
-            self.main_screen.blit(title_screen, (0, 0))
+            self.main_screen.blit(title_screen, (self.width/2 - picture_width/2, self.height/2 - picture_height/2))
             text_continue = text_format("Write your names & press Enter to continue", 30, black)
             text_continue_rect = text_continue.get_rect()
             self.main_screen.blit(text_continue,(self.width/2 - (text_continue_rect[2]/2), self.height/2 + 300))
@@ -224,6 +230,8 @@ class Game_graphical():
             nb_players = game.run_choose_your_character()
             if nb_players != -1:
                 exit_var = self.enter_player_names(nb_players)
+                if exit_var[0] == -2:
+                    return self.begin_game()
                 return exit_var
             elif nb_players == 0:
                 self.end_pygame()
@@ -266,7 +274,6 @@ class Game_graphical():
     def end_pygame(self):
         pygame.quit()
 
-
 #======================================================================================================================
 #======================================================================================================================
 #======================================================================================================================
@@ -301,7 +308,7 @@ def report_begin_game(g_var):
 
 
 # TEST
-game = Game_graphical(1021,1021)
+game = Game_graphical()
 game_var = game.begin_game()
 report_begin_game(game_var)
 game.end_pygame()

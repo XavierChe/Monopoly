@@ -22,7 +22,7 @@ yellow = (255, 255, 0)
 
 
 class Text_input_box:
-    def __init__(self,width = 200, height = 40, x_init = 10, y_init = 10, screen = None):
+    def __init__(self,width = 200, height = 40, x_init = 10, y_init = 10, screen = None, visible_after : bool = True):
         self.manager = pygame_textinput.TextInputManager(validator=lambda input: len(input) <= 17)
         self.font = pygame.font.SysFont("Consolas", 20)
         self.textinput = pygame_textinput.TextInputVisualizer(manager=self.manager, font_object=self.font)
@@ -31,6 +31,7 @@ class Text_input_box:
         self.x_init = x_init
         self.y_init = y_init
         self.clock = pygame.time.Clock()
+        self.visible = visible_after
         if screen == None:
             self.screen = pygame.display.set_mode((self.width, self.height), pygame.NOFRAME)
         else:
@@ -55,21 +56,31 @@ class Text_input_box:
             self.clock.tick(40)
         pygame.draw.rect(self.screen, white, pygame.Rect(self.x_init, self.y_init, self.width, self.height))
         pygame.display.update()
-        text_end = text_format(text_written, 20, black)
-        text_end_rect = text_end.get_rect()
-        self.screen.blit(text_end,
+        if self.visible:
+            text_end = text_format(text_written, 20, black)
+            self.screen.blit(text_end,
                               (self.x_init + 10 , self.y_init + 10))
-        pygame.display.update()
+            pygame.display.update()
         return text_written
 
 
 
 if __name__ == "__main__":
-    box1 = Text_input_box(screen= main_screen, x_init= 100, y_init= 100)
+
+    box1 = Text_input_box(screen= main_screen, x_init= 100, y_init= 100, visible_after= False)
+    box2 = Text_input_box(screen=main_screen, x_init=100, y_init=150, visible_after=True)
     text_receive = box1.show_box()
+    text_receive2 = box2.show_box()
     print(text_receive)
-    while True:
-        pass
 
 
+
+    go = True
+    while go:
+        for event in pygame.event.get():
+            if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
+                go = False
+            if event.type == pygame.QUIT:
+                go = False
+    pygame.quit()
 

@@ -97,8 +97,6 @@ def board(window_width= window.width, window_height = window.height):
 
 
     pygame.display.flip()
-    time.sleep(3)
 
 board()
 
-####
