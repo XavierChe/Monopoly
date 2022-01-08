@@ -101,7 +101,7 @@ def board(window_width= window.width, window_height = window.height):
     pygame.draw.rect(surface, green, pygame.Rect(30 * window.height // 33+2, 1 * window.height // 11 +2, window.height // 33-1,window.height // 11-2))
 
     def label(surface, name, x_init, y_init):
-        name_prop = text_format("", 8, black)
+        name_prop = text_format(name, 8, black)
         #rec_prop = name_prop.get_rect()
         surface.blit(name_prop, (x_init , y_init ))
 
@@ -151,4 +151,14 @@ def board(window_width= window.width, window_height = window.height):
 
     pygame.display.flip()
 
-board()
+
+if __name__ == "__main__":
+    Go = True
+    while Go:
+        for event in pygame.event.get():
+            if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
+                Go = False
+            if event.type == pygame.QUIT:
+                Go = False
+        board()
+    pygame.quit()
