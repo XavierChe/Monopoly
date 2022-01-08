@@ -101,9 +101,9 @@ def board(window_width= window.width, window_height = window.height):
     pygame.draw.rect(surface, green, pygame.Rect(30 * window.height // 33+2, 1 * window.height // 11 +2, window.height // 33-1,window.height // 11-2))
 
     def label(surface, name, x_init, y_init):
-        name_prop = text_format(name, 8, black)
-        #rec_prop = name_prop.get_rect()
-        surface.blit(name_prop, (x_init , y_init ))
+        name_prop = text_format(name, 12, black)
+        rec_prop = name_prop.get_rect()
+        surface.blit(name_prop, (x_init - (rec_prop[2] / 2), y_init ))
 
     label(surface,'Prison', window.height // 22, 21*window.height // 22)
     label(surface,'Start',21 * window.height // 22, 21*window.height // 22)
@@ -147,6 +147,11 @@ def board(window_width= window.width, window_height = window.height):
     label(surface,'Capucines', 21 * window.height // 22, 9 * window.height // 22)
     label(surface,'Foch', 21 * window.height // 22, 5 * window.height // 22)
     label(surface,'Breteuil', 21 * window.height // 22, 3 * window.height // 22)
+
+    label(surface, 'Impôts', 13 * window.height // 22, 21 * window.height // 22)
+    label(surface, 'Electricité', window.height // 22, 17 * window.height // 22)
+    label(surface, 'Eau', 17*window.height // 22,  window.height // 22)
+    label(surface, 'Taxe', 21 * window.height // 22, 17 * window.height // 22)
 
 
     pygame.display.flip()
