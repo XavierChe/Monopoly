@@ -2,7 +2,24 @@ from player import Player
 import random
 import pygame
 import pygame.locals as pl
+
 pygame.init()
+
+
+def text_format(message, textSize, textColor):
+    newFont = pygame.font.SysFont("Consolas", textSize)
+    newText = newFont.render(message, True, textColor)
+    return newText
+
+# Colors
+white = (255, 255, 255)
+black = (0, 0, 0)
+gray = (50, 50, 50)
+red = (255, 0, 0)
+green = (0, 255, 0)
+blue = (0, 0, 255)
+yellow = (255, 255, 0)
+
 
 class Case:
     _type: str
@@ -19,6 +36,13 @@ class Case:
 
     def type(self):
         return self._type
+
+    # Afficheur
+
+    def show_case(self, x_init, y_init,screen):
+        pygame.draw.rect(screen, white, pygame.Rect(x_init, y_init, 300, 340))
+        pygame.draw.rect(screen, black, pygame.Rect(x_init + 5, y_init + 5, 290, 330), 4)
+        pygame.display.flip()
 
 
 class Property(Case):
@@ -161,6 +185,32 @@ class Taxes(Case):
     def pay(self, player: Player):
         player.set_money(player.money()-self._value_tax)
 
+    def show_case(self, x_init, y_init,screen):
+        pygame.draw.rect(screen, white, pygame.Rect(x_init, y_init, 300, 340))
+        pygame.draw.rect(screen, black, pygame.Rect(x_init + 5, y_init + 5 , 290, 330), 4)
+        logo_picture = pygame.image.load('pictures/TAXE.png')
+        width_picture, height_picture = logo_picture.get_size()
+        screen.blit(logo_picture, (x_init + 150 - width_picture / 2, y_init + 115 - height_picture / 2))
+        name_prop = text_format(self.name(), 25, black)
+        rec_prop = name_prop.get_rect()
+        screen.blit(name_prop, (x_init + 150 - (rec_prop[2] / 2),y_init + 20))
+        price_prop = text_format("k€"+str(self.value()), 30, red)
+        rec_prop_price = price_prop.get_rect()
+        screen.blit(price_prop, (x_init + 150 - (rec_prop_price[2] / 2), y_init + 190))
+
+        one_train_prop = text_format("1 Gare : k€"+str(self.rent(1)), 15, black)
+        two_train_prop = text_format("2 Gare : k€" + str(self.rent(2)), 15, black)
+        three_train_prop = text_format("3 Gare : k€" + str(self.rent(3)), 15, black)
+        four_train_prop = text_format("4 Gare : k€" + str(self.rent(4)), 15, black)
+
+        one_rec = three_train_prop.get_rect()
+
+        screen.blit(one_train_prop, (x_init + 150 - (one_rec[2] / 2), y_init + 240))
+        screen.blit(two_train_prop, (x_init + 150 - (one_rec[2] / 2), y_init + 260))
+        screen.blit(three_train_prop, (x_init + 150 - (one_rec[2] / 2), y_init + 280))
+        screen.blit(four_train_prop, (x_init + 150 - (one_rec[2] / 2), y_init + 300))
+        pygame.display.flip()
+
 class Company(Case):
     def __init__(self, id, name="#", owner=0):
         super().__init__("Company", id)
@@ -203,3 +253,49 @@ class TrainStation(Case):
 
     def set_owner(self,id):
         self._owner=id
+
+    def show_case(self, x_init, y_init,screen):
+        pygame.draw.rect(screen, white, pygame.Rect(x_init, y_init, 300, 340))
+        pygame.draw.rect(screen, black, pygame.Rect(x_init + 5, y_init + 5 , 290, 330), 4)
+        logo_picture = pygame.image.load('pictures/GARE.png')
+        width_picture, height_picture = logo_picture.get_size()
+        screen.blit(logo_picture, (x_init + 150 - width_picture / 2, y_init + 115 - height_picture / 2))
+        name_prop = text_format(self.name(), 25, black)
+        rec_prop = name_prop.get_rect()
+        screen.blit(name_prop, (x_init + 150 - (rec_prop[2] / 2),y_init + 20))
+        price_prop = text_format("k€"+str(self.value()), 30, red)
+        rec_prop_price = price_prop.get_rect()
+        screen.blit(price_prop, (x_init + 150 - (rec_prop_price[2] / 2), y_init + 190))
+
+        one_train_prop = text_format("1 Gare : k€"+str(self.rent(1)), 15, black)
+        two_train_prop = text_format("2 Gare : k€" + str(self.rent(2)), 15, black)
+        three_train_prop = text_format("3 Gare : k€" + str(self.rent(3)), 15, black)
+        four_train_prop = text_format("4 Gare : k€" + str(self.rent(4)), 15, black)
+
+        one_rec = three_train_prop.get_rect()
+
+        screen.blit(one_train_prop, (x_init + 150 - (one_rec[2] / 2), y_init + 240))
+        screen.blit(two_train_prop, (x_init + 150 - (one_rec[2] / 2), y_init + 260))
+        screen.blit(three_train_prop, (x_init + 150 - (one_rec[2] / 2), y_init + 280))
+        screen.blit(four_train_prop, (x_init + 150 - (one_rec[2] / 2), y_init + 300))
+        pygame.display.flip()
+
+
+if __name__ == "__main__":
+    main_screen = pygame.display.set_mode((0,0),pygame.FULLSCREEN)
+    A = Case()
+    G1 = TrainStation(name="Gare de Lyon")
+    G2 = TrainStation(name="Gare Saint-Lazare")
+    G3 = TrainStation(name="Gare Montparnasse")
+    Go = True
+    while Go:
+        for event in pygame.event.get():
+            if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
+                Go = False
+            if event.type == pygame.QUIT:
+                Go = False
+        A.show_case(30,30,main_screen)
+        G1.show_case(360, 30, main_screen)
+        G2.show_case(360, 400, main_screen)
+        G3.show_case(360, 770, main_screen)
+    pygame.quit()
