@@ -1,5 +1,8 @@
 from player import Player
 import random
+import pygame
+import pygame.locals as pl
+pygame.init()
 
 class Case:
     _type: str
