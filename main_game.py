@@ -180,16 +180,28 @@ class Game_graphical():
             text_player2 = input.Text_input_box(200,40,self.width/2,self.height/2 + 70,screen=self.main_screen)
             text_player3 = input.Text_input_box(200,40,self.width/2,self.height/2 + 140,screen=self.main_screen)
             text_player4 = input.Text_input_box(200,40,self.width/2,self.height/2 + 210,screen=self.main_screen)
-            pygame.draw.circle(self.main_screen, red, (
-                self.width / 2 - 80, self.height / 2 + 20), 20)
-            pygame.draw.circle(self.main_screen, green, (
-                self.width / 2 - 80, self.height / 2 + 90), 20)
+
+            pion1 = pygame.image.load('pictures/PION1.png')
+            pion1_width, pion1_height = pion1.get_size()
+            self.main_screen.blit(pion1,
+                                  (self.width / 2 - 80 - pion1_width / 2, self.height / 2  + 20 - pion1_height / 2))
+
+            pion2 = pygame.image.load('pictures/PION2.png')
+            pion2_width, pion2_height = pion2.get_size()
+            self.main_screen.blit(pion2,
+                                  (self.width / 2 - 80 - pion2_width / 2, self.height / 2 + 90 - pion2_height / 2))
+
             if (nb_player >= 3):
-                pygame.draw.circle(self.main_screen, blue, (
-                    self.width / 2 - 80, self.height / 2 + 160), 20)
+                pion3 = pygame.image.load('pictures/PION3.png')
+                pion3_width, pion3_height = pion3.get_size()
+                self.main_screen.blit(pion3,
+                                      (self.width / 2 - 80 - pion3_width / 2, self.height / 2 + 160 - pion3_height / 2))
             if (nb_player >= 4):
-                pygame.draw.circle(self.main_screen, yellow, (
-                    self.width / 2 - 80, self.height / 2 + 230), 20)
+                pion4 = pygame.image.load('pictures/PION4.png')
+
+                pion4_width, pion4_height = pion4.get_size()
+                self.main_screen.blit(pion4,
+                                      (self.width / 2 - 80 - pion4_width / 2, self.height / 2 + 230 - pion4_height / 2))
             if (nb_player >= 2 and name_1 ==""):
                 name_1 = text_player1.show_box()
                 name_2 = text_player2.show_box()
