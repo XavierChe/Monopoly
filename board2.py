@@ -17,6 +17,11 @@ rose = (253, 108, 158)
 orange = (253, 108, 0)
 window = pyglet.window.Window(visible=True, fullscreen=True, caption='Monopoly')
 
+def text_format(message, textSize, textColor):
+    newFont = pygame.font.SysFont ("Consolas", textSize)
+    newText = newFont.render (message, True, textColor)
+    return newText
+
 def board(window_width= window.width, window_height = window.height):
     surface = pygame.display.set_mode((window_width,window_height))
     pygame.draw.rect(surface, white, pygame.Rect(0, 0,window_height//11 - 2,window_height//11))
@@ -95,8 +100,55 @@ def board(window_width= window.width, window_height = window.height):
     pygame.draw.rect(surface, green, pygame.Rect(30 * window.height // 33+2, 2 * window.height // 11 +2, window.height // 33-1,window.height // 11-2))
     pygame.draw.rect(surface, green, pygame.Rect(30 * window.height // 33+2, 1 * window.height // 11 +2, window.height // 33-1,window.height // 11-2))
 
+    def label(surface, name, x_init, y_init):
+        name_prop = text_format("", 8, black)
+        #rec_prop = name_prop.get_rect()
+        surface.blit(name_prop, (x_init , y_init ))
+
+    label(surface,'Prison', window.height // 22, 21*window.height // 22)
+    label(surface,'Start',21 * window.height // 22, 21*window.height // 22)
+    label(surface,'Free Park',window.height // 22, window.height // 22)
+    label(surface,'Go Prison', 21 * window.height // 22,  window.height // 22)
+    label(surface,'Montparnasse', 11 * window.height // 22, 21*window.height /22)
+    label(surface,'St Lazare', 21 * window.height // 22, 11 * window.height // 22)
+    label(surface,'Lyon',window.height // 22, 11 * window.height // 22)
+    label(surface,'Est', 11*window.height//22, window.height//22)
+
+    label(surface,'Chance',7 * window.height // 22, 21*window.height // 22)
+    label(surface,'Chance', 21 * window.height // 22, 13*window.height // 22)
+    label(surface,'Chance', 5 * window.height // 22, window.height // 22)
+    label(surface,'Chance', 17 * window.height // 22, 21*window.height // 22)
+    label(surface,'Chance', 21 * window.height // 22, 7*window.height // 22)
+    label(surface,'Chance', window.height // 22, 7*window.height // 22)
+    label(surface,'Chance', 11 * window.height // 22, 11*window.height // 22)
+
+    label(surface,'Belleville', 19* window.height // 22, 21*window.height // 22)
+    label(surface,'Lecourbe', 15 * window.height // 22, 21*window.height // 22)
+    label(surface,'Vaugirard', 9 * window.height // 22, 21*window.height // 22)
+    label(surface,'Courcelles', 5 * window.height // 22, 21*window.height // 22)
+    label(surface,'République', 3 * window.height // 22, 21*window.height // 22)
+
+    label(surface,'La Villette', window.height // 22, 19*window.height // 22)
+    label(surface,'Neuilly', window.height // 22, 15 * window.height // 22)
+    label(surface,'Paradis', window.height // 22, 13 * window.height // 22)
+    label(surface,'Mozart', window.height // 22, 9 * window.height // 22)
+    label(surface,'St Michel', window.height // 22, 5 * window.height // 22)
+    label(surface,'Pigalle', window.height // 22, 3 * window.height // 22)
+
+    label(surface,'Matignon', 3*window.height // 22,  window.height // 22)
+    label(surface,'Malsherbes', 7 * window.height // 22, window.height // 22)
+    label(surface,'H. Martin', 9 * window.height // 22, window.height // 22)
+    label(surface,'St Honoré', 13 * window.height // 22, window.height // 22)
+    label(surface,'La Bourse', 15 * window.height // 22, window.height // 22)
+    label(surface,'La Fayette', 19 * window.height // 22, window.height // 22)
+
+    label(surface,'Paix', 21 * window.height // 22, 19 * window.height // 22)
+    label(surface,'Champs', 21 * window.height // 22, 15 * window.height // 22)
+    label(surface,'Capucines', 21 * window.height // 22, 9 * window.height // 22)
+    label(surface,'Foch', 21 * window.height // 22, 5 * window.height // 22)
+    label(surface,'Breteuil', 21 * window.height // 22, 3 * window.height // 22)
+
 
     pygame.display.flip()
 
 board()
-
