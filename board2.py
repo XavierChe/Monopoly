@@ -24,7 +24,7 @@ def board(window_width = window.width, window_height = window.height):
     board_background_image = board_background_image.resize((window_width, window_height))
     board_background_image.save('./pictures/board_resized.png')
     board_background = pygame.image.load('./pictures/board_resized.png')
-    surface.blit(board_background, (0,0))   
+    surface.blit(board_background, (0,0))
 
     pygame.display.flip()
 

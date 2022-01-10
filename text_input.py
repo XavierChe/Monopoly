@@ -86,7 +86,6 @@ if __name__ == "__main__":
     print(text_receive)
 
 
-
     go = True
     while go:
         for event in pygame.event.get():
