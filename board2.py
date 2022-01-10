@@ -165,6 +165,8 @@ if __name__ == "__main__":
                 Go = False
             if event.type == pygame.QUIT:
                 Go = False
+        width, height = screen.get_size()
+
         coord = [(21 * height // 22, 21 * height // 22), (19 * height // 22, 21 * height // 22),
                  (17 * height // 22, 21 * height // 22), (15 * height // 22, 21 * height // 22),
                  (13 * height // 22, 21 * height // 22), (11 * height // 22, 21 * height // 22),
