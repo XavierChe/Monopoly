@@ -1,5 +1,4 @@
 import pygame
-import time
 import pyglet
 
 pygame.init()
@@ -16,6 +15,7 @@ brown = (91, 60, 17)
 rose = (253, 108, 158)
 orange = (253, 108, 0)
 window = pyglet.window.Window(visible=True, fullscreen=True, caption='Monopoly')
+
 
 def text_format(message, textSize, textColor):
     newFont = pygame.font.SysFont ("Consolas", textSize)
@@ -101,7 +101,7 @@ def board(window_width= window.width, window_height = window.height):
     pygame.draw.rect(surface, green, pygame.Rect(30 * window.height // 33+2, 1 * window.height // 11 +2, window.height // 33-1,window.height // 11-2))
 
     def label(surface, name, x_init, y_init):
-        name_prop = text_format(name, 12, black)
+        name_prop = text_format(name, 10, black)
         rec_prop = name_prop.get_rect()
         surface.blit(name_prop, (x_init - (rec_prop[2] / 2), y_init ))
 
@@ -165,5 +165,23 @@ if __name__ == "__main__":
                 Go = False
             if event.type == pygame.QUIT:
                 Go = False
+        coord = [(21 * height // 22, 21 * height // 22), (19 * height // 22, 21 * height // 22),
+                 (17 * height // 22, 21 * height // 22), (15 * height // 22, 21 * height // 22),
+                 (13 * height // 22, 21 * height // 22), (11 * height // 22, 21 * height // 22),
+                 (9 * height // 22, 21 * height // 22), (7 * height // 22, 21 * height // 22),
+                 (5 * height // 22, 21 * height // 22), (3 * height // 22, 21 * height // 22),
+                 (height // 22, 21 * height // 22), (height // 22, 19 * height // 22),
+                 (height // 22, 17 * height // 22), (height // 22, 15 * height // 22),
+                 (height // 22, 13 * height // 22), (height // 22, 11 * height // 22), (height // 22, 9 * height // 22),
+                 (height // 22, 7 * height // 22), (height // 22, 5 * height // 22), (height // 22, 3 * height // 22),
+                 (height // 22, height // 22), (3 * height // 22, height // 22), (5 * height // 22, height // 22),
+                 (7 * height // 22, height // 22), (9 * height // 22, height // 22), (11 * height // 22, height // 22),
+                 (13 * height // 22, height // 22), (15 * height // 22, height // 22),
+                 (17 * height // 22, height // 22), (19 * height // 22, height // 22),
+                 (21 * height // 22, height // 22), (21 * height // 22, 3 * height // 22),
+                 (21 * height // 22, 5 * height // 22), (21 * height // 22, 7 * height // 22),
+                 (21 * height // 22, 9 * height // 22), (21 * height // 22, 11 * height // 22),
+                 (21 * height // 22, 13 * height // 22), (21 * height // 22, 15 * height // 22),
+                 (21 * height // 22, 17 * height // 22), (21 * height // 22, 19 * height // 22)]
         board()
     pygame.quit()
