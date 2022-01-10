@@ -2,6 +2,7 @@ import pygame_textinput
 import pygame
 import pygame.locals as pl
 pygame.init()
+from propriete import *
 
 screen_width, screen_height = 500,500
 main_screen = pygame.display.set_mode((screen_width,screen_height))
@@ -10,6 +11,17 @@ def text_format(message, textSize, textColor):
     newFont = pygame.font.SysFont("Consolas", textSize)
     newText = newFont.render(message, True, textColor)
     return newText
+
+
+nb_lignes  = 10
+screen = pygame.display.set_mode((0,0),pygame.FULLSCREEN)
+width, height = screen.get_size()
+
+def print_text(screen,nb_ligne, text, textSize, textColor):
+    txt = text_format(text, textSize, textColor)
+    y_init = nb_ligne*height//(nb_lignes+1)
+    x_init = (width-height) + 100
+    screen.blit(txt, (x_init, y_init))
 
 # Colors
 white = (255, 255, 255)
@@ -72,7 +84,6 @@ if __name__ == "__main__":
     text_receive = box1.show_box()
     text_receive2 = box2.show_box()
     print(text_receive)
-
 
 
     go = True

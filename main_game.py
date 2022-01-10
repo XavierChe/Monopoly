@@ -3,6 +3,7 @@ import text_input as input
 from text_input import text_format
 from time import sleep
 from pygame.locals import *
+from Monopoly_graph import read_properties, Board, Game
 
 
 #======================================================================================================================
@@ -254,10 +255,15 @@ class Game_graphical():
             self.end_pygame()
             return ([-1])
 
+    def create_game(self,game_var):
+        main_game = Game(game_var)
+        first_player_index = random.randint(1, len(game_var) - 1)
+        return [main_game, first_player_index]
+
     # MAIN LOOP OF THE GAME
-    pass
 
-
+    def player_tour(self):
+        pass
 
     # END OF THE GAME
     def end_game(self, winning_player):

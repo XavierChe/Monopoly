@@ -1,3 +1,9 @@
+import pygame
+
+pygame.init()
+
+position_possible = [(21*height//22, 21*height//22),(19*height//22, 21*height//22),(17*height//22, 21*height//22),(15*height//22, 21*height//22),(13*height//22, 21*height//22),(11*height//22, 21*height//22),(9*height//22, 21*height//22),(7*height//22, 21*height//22),(5*height//22, 21*height//22),(3*height//22, 21*height//22),(height//22, 21*height//22),(height//22, 19*height//22),(height//22, 17*height//22),(height//22, 15*height//22),(height//22, 13*height//22),(height//22, 11*height//22),(height//22, 9*height//22),(height//22, 7*height//22),(height//22, 5*height//22),(height//22, 3*height//22),(height//22, height//22),(3*height//22, height//22),(5*height//22, height//22),(7*height//22, height//22),(9*height//22, height//22),(11*height//22, height//22),(13*height//22, height//22),(15*height//22, height//22),(17*height//22, height//22),(19*height//22, height//22),(21*height//22, height//22),(21*height//22, 3*height//22),(21*height//22, 5*height//22),(21*height//22, 7*height//22),(21*height//22, 9*height//22),(21*height//22, 11*height//22),(21*height//22, 13*height//22),(21*height//22, 15*height//22),(21*height//22, 17*height//22),(21*height//22, 19*height//22)]
+
 class Player:
     _id : int
     _money : int
@@ -51,3 +57,10 @@ class Player:
 
     def set_round_in_prison(self,c):
         self._round_in_prison=c
+
+    def show_player(self):
+        if self.id() == 1:
+            pion1 = pygame.image.load('pictures/PION1.png')
+            pion1_width, pion1_height = pion1.get_size()
+            screen.blit(pion1,
+                        (position_possible[self.position()][0] - pion1_width // 2, position_possible[self.position()][1] - pion1_height // 2))
