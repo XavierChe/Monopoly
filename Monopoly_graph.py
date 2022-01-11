@@ -1,8 +1,10 @@
-from player import Player
+from player import *
 import random
 import pygame
 import pygame.locals as pl
 from color import *
+from main_game import *
+from text_input import Terminal
 
 pygame.init()
 
@@ -137,10 +139,10 @@ class Board:
             print(" \n \n You earned ", value, "€ \n \n")
 
 
-class Game:
+class Game_graph:
     def __init__(self, game_var):
         """Initialise le board et les joueurs"""
-        nb_player = len(game_var) - 1
+        nb_players = len(game_var) - 1
         self.players = [0]
         for i in range(1, nb_players + 1):
             self.players.append(Player(i, game_var[i]))
@@ -153,7 +155,7 @@ class Game:
                 id_player = self.players[i].id()
         return id_player
 
-    """
+
     def display_properties(self, property_player):
         for i in range(1, len(property_player) + 1):
             if (property_player[i - 1].type() == "Property"):
@@ -166,7 +168,7 @@ class Game:
                           1, "\n")
             else:
                 print(" ", i, " - ", property_player[i - 1].name(), "\n")
-    """
+
 
     def exchange_properties(self, id_buyer, id_seller, value_exchange, id_property_buyer, id_property_seller):
         self.game_board.cases()[id_property_buyer].set_owner(id_seller)
@@ -177,22 +179,10 @@ class Game:
     def player_tour(self, player: Player):
 
         """Un tour de jeu pour un joueur"""
-
-        name_prop = text_format("dvjdkjsjkdsh", 20, white)
-        rec_prop = name_prop.get_rect()
-        screen.blit(name_prop, (x_init + 150 - (rec_prop[2] / 2), y_init + 35))
-
-
-        name_prop = text_format("test", 20, white)
-        rec_prop = name_prop.get_rect()
-        screen.blit(name_prop, (x_init + 150 - (rec_prop[2] / 2), y_init + 35))
-        aff.clear_console()
-        print(aff.monopoly_char)
-        print("\n \n \n \n")
-        print(" Time for ", player.name(), "to play !!! \n\n")
-        print_line("██████████████████████████████████████████",4)
-        print("\n Your Bank account : ", player.money(), " € \n \n")
-        print(" Properties : \n")
+        clear_all(game)
+        print_line(game," Time for " + str(player.name()), " to play !!! ",1)
+        print_line(game,"Your Bank account : " + str(player.money()) + " € ",2)
+        print_line(game," Properties : ",3)
         property_player = self.game_board.list_property(player)
         self.display_properties(property_player)
         print("██████████████████████████████████████████")
@@ -563,13 +553,10 @@ class Game:
 
 
 if __name__ == '__main__':
-    print("\n \n Choose the number of players \n \n")
-    nb_players = int(input(""))
-    while (nb_players < 2):
-        print("\n \n You have to enter a number higher than 1 \n \n")
-        print("\n \n Choose the number of players \n \n")
-        nb_players = int(input(""))
-    new_game = Game(True, nb_players)
+    game = Game_graphical()
+    game_var = game.begin_game()
+    nb_players = len(game_var) - 1
+    new_game = Game_graph(True, nb_players)
     nb_players_in_game = nb_players
     id_current_player = random.randint(1, nb_players)
     while (nb_players_in_game > 1):
