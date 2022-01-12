@@ -3,8 +3,10 @@ import text_input as input
 from text_input import text_format
 from time import sleep
 from pygame.locals import *
-from Monopoly_graph import read_properties, Board, Game
-
+from Monopoly_graph import read_properties, Board, Game_graph
+import random
+import time
+from color import *
 
 #======================================================================================================================
 #======================================================================================================================
@@ -256,7 +258,11 @@ class Game_graphical():
             return ([-1])
 
     def create_game(self,game_var):
-        main_game = Game(game_var)
+        self.main_screen.fill(pygame.Color("white"))
+        pygame.display.update()
+        main_game = Game_graph(game_var)
+        main_game.term = input.Terminal(self.width//2 - 250,10, self.main_screen)
+        main_game.screen = self.main_screen
         first_player_index = random.randint(1, len(game_var) - 1)
         return [main_game, first_player_index]
 
@@ -329,4 +335,7 @@ def report_begin_game(g_var):
 game = Game_graphical()
 game_var = game.begin_game()
 report_begin_game(game_var)
+main_game_system, id_first_player = game.create_game(game_var)
+main_game_system.player_tour(main_game_system.players[1])
+time.sleep(3)
 game.end_pygame()

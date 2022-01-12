@@ -13,11 +13,6 @@ def text_format(message, textSize, textColor):
     newText = newFont.render(message, True, textColor)
     return newText
 
-
-nb_lignes  = 10
-screen = pygame.display.set_mode((0,0),pygame.FULLSCREEN)
-width, height = screen.get_size()
-
 def print_text(screen,nb_ligne, text, textSize, textColor):
     txt = text_format(text, textSize, textColor)
     y_init = nb_ligne*height//(nb_lignes+1)
@@ -26,8 +21,8 @@ def print_text(screen,nb_ligne, text, textSize, textColor):
 
 
 class Text_input_box:
-    def __init__(self,width = 200, height = 40, x_init = 10, y_init = 10, screen = None, visible_after : bool = True):
-        self.manager = pygame_textinput.TextInputManager(validator=lambda input: len(input) <= 17)
+    def __init__(self,width = 200, height = 40, x_init = 10, y_init = 10, screen = None, visible_after : bool = True, validate = lambda input: len(input) <= 17):
+        self.manager = pygame_textinput.TextInputManager(validator=validate)
         self.font = pygame.font.SysFont("Consolas", 20)
         self.textinput = pygame_textinput.TextInputVisualizer(manager=self.manager, font_object=self.font)
         self.width = width
@@ -91,6 +86,7 @@ class Terminal():
         text_to_print = text_format(text, size, color)
         self.screen.blit(text_to_print, (self.x_init + 10, self.y_init + y_coordinate))
         pygame.display.update()
+        return(nb_line + 1)
 
     def clear_line(self, nb_line):
         """clear the text on line nb_line"""
@@ -98,12 +94,12 @@ class Terminal():
         pygame.draw.rect(self.screen, white, pygame.Rect(self.x_init, self.y_init + y_coordinate, self.width, 20))
         pygame.display.update()
 
-    def print_input(self, nb_line, visible_aft = True):
+    def print_input(self, nb_line, visible_aft = True, validate = lambda input: len(input) <= 17 ):
         y_coordinate = (self.height // 40) * nb_line
-        box = Text_input_box(screen=self.screen,x_init= self.x_init+10, y_init=self.y_init + y_coordinate, visible_after=visible_aft)
+        box = Text_input_box(screen=self.screen,x_init= self.x_init+10, y_init=self.y_init + y_coordinate, visible_after=visible_aft, validate = validate)
         text_receive = box.show_box()
         pygame.display.update()
-        return text_receive
+        return [text_receive,nb_line+1]
 
 
 if __name__ == "__main__":

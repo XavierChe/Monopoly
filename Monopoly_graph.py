@@ -3,8 +3,9 @@ import random
 import pygame
 import pygame.locals as pl
 from color import *
-from main_game import *
 from text_input import Terminal
+from propriete import Case, Property, Taxes, TrainStation, GoToPrison, Prison, Luck, Company
+import time
 
 pygame.init()
 
@@ -36,7 +37,7 @@ def read_properties(file):
 
 
 class Board:
-    def __init__(self, debug: bool):
+    def __init__(self):
             # Plus complexe parce qu'il faut différencier toutes les cases
             # Mettre le bon nom de fichier puis ne plus y toucher
         properties = read_properties("properties.txt")
@@ -144,6 +145,8 @@ class Game_graph:
         """Initialise le board et les joueurs"""
         nb_players = len(game_var) - 1
         self.players = [0]
+        self.term = None
+        self.screen = None
         for i in range(1, nb_players + 1):
             self.players.append(Player(i, game_var[i]))
             self.game_board = Board()
@@ -156,18 +159,10 @@ class Game_graph:
         return id_player
 
 
-    def display_properties(self, property_player):
+    def display_properties(self, property_player,nb_line):
         for i in range(1, len(property_player) + 1):
-            if (property_player[i - 1].type() == "Property"):
-                nb_houses = property_player[i - 1].nb_houses()
-                if (nb_houses < 5):
-                    print(" ", i, " - ", property_player[i - 1].name(), " - Number of houses : ",
-                          nb_houses, "\n")
-                else:
-                    print(" ", i, " - ", property_player[i - 1].name(), " - Number of hotel : ",
-                          1, "\n")
-            else:
-                print(" ", i, " - ", property_player[i - 1].name(), "\n")
+            self.term.print_line(str(i) + " - " + property_player[i - 1].name(), nb_line + i - 1)
+        return (nb_line + len(property_player))
 
 
     def exchange_properties(self, id_buyer, id_seller, value_exchange, id_property_buyer, id_property_seller):
@@ -179,106 +174,113 @@ class Game_graph:
     def player_tour(self, player: Player):
 
         """Un tour de jeu pour un joueur"""
-        clear_all(game)
-        print_line(game," Time for " + str(player.name()), " to play !!! ",1)
-        print_line(game,"Your Bank account : " + str(player.money()) + " € ",2)
-        print_line(game," Properties : ",3)
+        self.term.clear_all()
+        self.term.print_line("██████████████████████████████████████████", 1)
+        self.term.print_line(" Time for " + str(player.name()) + " to play !!! ",2)
+        self.term.print_line("Your Bank account : " + str(player.money()) + " € ",3)
+        self.term.print_line("Properties : ",4)
         property_player = self.game_board.list_property(player)
-        self.display_properties(property_player)
-        print("██████████████████████████████████████████")
+        current_line = self.display_properties(property_player,5)
+        current_line = self.term.print_line("██████████████████████████████████████████",current_line)
         ## b est un booléen pour déterminer si le joueur peut lancer les dés pour avancer
         b = True
         ## Cas Prison ##
 
         if (player.free() == False):
             if (player.escape_card() > 0):
-                print(" You have an escape card, you can leave the prison for free. \n")
+                self.term.print_line(" You have an escape card, you can leave the prison for free",current_line)
                 player.set_free(True)
                 player.set_escape_card(player.escape_card() - 1)
             else:
-                print("You are imprisonned. \n Do you want to roll the dices to try to exit the prison this round ? \n")
-                print("A- Yes \n \nB- No \n \n ")
-                answer = ""
-                while (answer != "A" and answer != "B"):
-                    answer = input("")
-                if answer == "B":
+                current_line = self.term.print_line("You are imprisonned. Do you want to roll the dices to try to exit the prison this round ?",current_line)
+                current_line = self.term.print_line("A- Yes", current_line)
+                current_line = self.term.print_line("B- No", current_line)
+                output = self.term.print_input(current_line,lambda input: input=="A" or input =="B")
+                current_line +=1
+                if output == "B":
                     b = self.game_board.cases()[player.position()].rounds_passed(player)
                 else:
-                    print("\n Press enter to role the dices \n \n")
-                    answer = input("")
+                    current_line = self.term.print_line("Press enter to role the dices",current_line)
+                    go = True
+                    while go:
+                        for event in pygame.event.get():
+                            if event.type == pygame.KEYDOWN and event.key == pygame.K_RETURN:
+                                go = False
                     dice_1 = random.randint(1, 6)
                     dice_2 = random.randint(1, 6)
-                    print(" You've got ", dice_1, " and ", dice_2, "\n")
+                    current_line = self.term.print_line(" You've got " + str(dice_1) + " and " + str(dice_2), current_line)
                     b = self.game_board.cases()[player.position()].trying_to_escape_prison(dice_1, dice_2, player)
 
         ## Cas possibilité d'avancer ##
 
         if (b):
-            print("\n Press enter to roll the dices \n \n")
-            answer = input("")
-            if (self.debug):
-                dice_result = 1
-            else:
-                dice_1 = random.randint(1, 6)
-                dice_2 = random.randint(1, 6)
-                dice_result = dice_1 + dice_2
-                print(" You've got", dice_1, "+", dice_2, "\n")
+            current_line = self.term.print_line("Press enter to role the dices",current_line)
+            go = True
+            while go:
+                for event in pygame.event.get():
+                    if event.type == pygame.KEYDOWN and event.key == pygame.K_RETURN:
+                        go = False
+            dice_1 = random.randint(1, 6)
+            dice_2 = random.randint(1, 6)
+            dice_result = dice_1 + dice_2
+            current_line = self.term.print_line(" You've got " + str(dice_1) + " and " + str(dice_2), current_line)
             if (player.position() + dice_result > self.game_board.nb_spaces()):
                 player.set_money(player.money() + 200)
-                print(" You passed the Start ! You receive 200€ ! \n \n")
+                current_line = self.term.print_line(" You passed the Start ! You receive 200€ !", current_line)
             if (player.position() + dice_result == self.game_board.nb_spaces()):
                 player.set_money(player.money() + 400)
-                print(" You're exactly at the Start ! You receive 400€ ! \n \n")
+                current_line = self.term.print_line(" You're exactly at the Start ! You receive 400€ !", current_line)
             player.set_position((player.position() + dice_result) % self.game_board.nb_spaces())
+
 
             ## Cas départ ##
             if (self.game_board.cases()[player.position()].type() == "Start"):
-                print(" You are at the start !!\n")
+                current_line = self.term.print_line(" You are at the start !!", current_line)
 
             ## Cas Parc Gratuit ##
             elif (self.game_board.cases()[player.position()].type() == "Free Park"):
-                print(" You're now on - ", self.game_board.cases()[player.position()].type(), " - \n \n")
-                print(" You are at the free park !!\n")
+                current_line = self.term.print_line(" You're now on - " + self.game_board.cases()[player.position()].type() , current_line)
+                current_line = self.term.print_line(" You are at the free park !!", current_line)
 
             ## Cas Simple visite en Prison ##
             elif (self.game_board.cases()[player.position()].type() == "Prison"):
-                print(" You're now on - ", self.game_board.cases()[player.position()].type(), " - \n \n")
-                print(" You are just visiting the prison \n \n")
+                current_line = self.term.print_line(" You're now on - " +  self.game_board.cases()[player.position()].type(), current_line)
+                current_line = self.term.print_line(" You are just visiting the prison", current_line)
 
             ## Cas Allez En Prison ##
             elif (self.game_board.cases()[player.position()].type() == "Go to Prison"):
-                print(" You're now on - ", self.game_board.cases()[player.position()].type(), " - \n \n")
-                print(" How unlucky... You're imprisonned...\n")
+                current_line = self.term.print_line(" You're now on - " +  self.game_board.cases()[player.position()].type(), current_line)
+                current_line = self.term.print_line(" How unlucky... You're imprisonned...", current_line)
                 self.game_board.cases()[player.position()].imprison(player)
 
             ## Cas Chance ##
             elif (self.game_board.cases()[player.position()].type() == "Luck"):
-                print(" You're now on - ", self.game_board.cases()[player.position()].type(), " - \n \n")
+                current_line = self.term.print_line(" You're now on - " +  self.game_board.cases()[player.position()].type(), current_line)
                 self.game_board.cases()[player.position()].action(player)
 
             ## Cas Taxes ##
             elif (self.game_board.cases()[player.position()].type() == "Taxes"):
-                print(" You're now on - ", self.game_board.cases()[player.position()].type(), " - \n \n")
-                print(" Oh nooooo, you have to pay taxes... It costs ",
-                      self.game_board.cases()[player.position()].value(), "€")
+                current_line = self.term.print_line(" You're now on - " +  self.game_board.cases()[player.position()].type(), current_line)
+                current_line = self.term.print_line(" Oh nooooo, you have to pay taxes... It costs " +
+                      str(self.game_board.cases()[player.position()].value()) + "k€" , current_line)
                 self.game_board.cases()[player.position()].pay(player)
 
             ## Cas Compagnies, Gares et Propriétés ##
             if (self.game_board.cases()[player.position()].type() in ["Company", "Train Station", "Property"]):
-                print(" You're now on - ", self.game_board.cases()[player.position()].name(), " - \n \n")
+                current_line = self.term.print_line(" You're now on - " +  self.game_board.cases()[player.position()].type(), current_line)
                 if (self.game_board.is_owned(player.position()) == player.id()):
-                    print(" Welcome Home !!!")
+                    current_line = self.term.print_line(" Welcome Home !!!",current_line)
                 elif self.game_board.is_owned(player.position()) is not None:
                     id_of_owner = self.game_board.is_owned(player.position())
-                    print(" You must pay a tax to player ", id_of_owner, "\n \n")
+                    current_line = self.term.print_line(" You must pay a tax to player " + str(id_of_owner), current_line)
 
                     ## Cas Companie ##
                     if (self.game_board.cases()[player.position()].type() == "Company"):
                         if (self.game_board.is_owned(12) == self.game_board.is_owned(28)):
-                            print(" The rent is 10 times the sum of the value on the dices \n \n")
+                            current_line = self.term.print_line(" The rent is 10 times the sum of the value on the dices", current_line)
                             self.game_board.transaction(player, self.players[id_of_owner], 12 * dice_result)
                         else:
-                            print(" The rent is 4 times the sum of the value on the dices \n \n")
+                            current_line = self.term.print_line(" The rent is 4 times the sum of the value on the dices", current_line)
                             self.game_board.transaction(player, self.players[id_of_owner], 4 * dice_result)
 
                     ## Cas Gare ##
@@ -287,67 +289,77 @@ class Game_graph:
                         for i in range(5, 36, 10):
                             if (self.game_board.is_owned(i) == id_of_owner):
                                 nb_train_stations_owned += 1
-                        print(" It costs ", self.game_board.cases()[player.position()].rent(nb_train_stations_owned),
-                              "€", "\n \n")
+                        current_line = self.term.print_line(" It costs " + str(self.game_board.cases()[player.position()].rent(nb_train_stations_owned)) +
+                              "k€", current_line)
                         self.game_board.transaction(player, self.players[id_of_owner],
                                                     self.game_board.cases()[player.position()].rent(
                                                         nb_train_stations_owned))
 
                     ## Cas Propriété ##
                     else:
-                        print(" It costs ", self.game_board.cases()[player.position()].rent(), "€", "\n \n")
+                        current_line = self.term.print_line(" It costs " + str(self.game_board.cases()[player.position()].rent()) + "k€", current_line)
                         self.game_board.transaction(player, self.players[id_of_owner],
                                                     self.game_board.cases()[player.position()].rent())
                 else:
-                    print(" Free space \n \n")
-                    print(" It costs ", self.game_board.cases()[player.position()].value(), "€", "\n \n")
+                    current_line = self.term.print_line(" Free space ", current_line)
+                    self.game_board.cases()[player.position()].show_case(10,10, self.screen)
+                    current_line = self.term.print_line(" It costs " + str(self.game_board.cases()[player.position()].value()) + "k€", current_line)
                     if (self.game_board.cases()[player.position()].value() > player.money()):
-                        print(" You don't have enough money to buy the property. \n \n")
+                        current_line = self.term.print_line(" You don't have enough money to buy the property",current_line, color=rouge)
                     else:
-                        print(" You can buy the property \n")
-                        print(" Do you want to buy it ? \n A- Yes \n B- No")
-                        answer = ""
-                        while (answer != "A" and answer != "B"):
-                            answer = input("")
-                        if answer == "A":
+                        current_line = self.term.print_line(" You can buy the property ", current_line, color=vert)
+                        current_line = self.term.print_line(" Do you want to buy it ?", current_line)
+                        current_line = self.term.print_line(" A - Yes", current_line)
+                        current_line = self.term.print_line(" B - No", current_line)
+                        output = self.term.print_input(current_line, lambda input: input == "A" or input == "B")
+                        current_line += 1
+                        if output == "A":
                             self.game_board.buy_property(player)
                         else:
                             pass
 
+
         while (player.money() < 0 and len(property_player) > 0):
-            print(
-                "\n \n You don't have enough money, you have to sell some houses or some properties. \n \n Here are your properties : \n \n")
+            current_line = self.term.print_line(
+                "You don't have enough money, you have to sell some houses or some properties",current_line)
+            current_line = self.term.print_line("Here are your properties :", current_line)
             self.display_properties(property_player)
-            print(
-                "\n \n Do you want to sell a house or a property to the bank ? \n \n A - House \n \n B - Property \n \n")
-            answer = input("")
-            if (answer == "A"):
-                print(" \n On which property do you want to sell a house ? Enter the id diplayed in the recap : \n \n")
-                id_property = int(input(""))
-                if (id_property < 1 or id_property > len(property_player) or property_player[
-                    id_property - 1].type() != "Property"):
-                    print("\n The number you entered is invalid")
+            current_line = self.term.print_line(
+                "Do you want to sell a house or a property to the bank ?",current_line)
+            current_line = self.term.print_line("A - House",current_line)
+            current_line = self.term.print_line("B - Property", current_line)
+            output = self.term.print_input(current_line, lambda input: input == "A" or input == "B")
+            current_line += 1
+            if (output == "A"):
+                current_line = self.term.print_line("On which property do you want to sell a house ? Enter the id diplayed in the recap :", current_line)
+                def f(input):
+                    for i in range(1,len(property_player)):
+                        if input == str(i):
+                            return True
+                    return False
+                id_property = self.term.print_input(current_line, f)
+                current_line+=1
+                if (self.game_board.cases()[property_player[id_property - 1].id()].nb_houses() == 0):
+                    current_line = self.term.print_line("You don't have any house on this property",current_line)
                 else:
-                    if (self.game_board.cases()[property_player[id_property - 1].id()].nb_houses() == 0):
-                        print("\n You don't have any house on this property. \n \n")
-                    else:
-                        price_house = self.game_board.cases()[
-                            property_player[id_property - 1].id()].price_houses()
-                        former_nb_houses = self.game_board.cases()[
-                            property_player[id_property - 1].id()].nb_houses()
-                        self.game_board.cases()[property_player[id_property - 1].id()].set_nb_houses(
-                            former_nb_houses - 1)
-                        player.set_money(player.money() + price_house)
-                        print(" You earned ", price_house, "€ \n \n")
-            elif (answer == "B"):
-                print(" \n Which property ? Enter the id diplayed above : \n \n")
-                id_property = int(input(""))
-                if (id_property < 1 or id_property > len(property_player)):
-                    print(" The number you entered is invalid")
-                else:
-                    self.game_board.sell_property(player, property_player[id_property - 1].id())
-            else:
-                print("\n \n The answer you entered is incorrect. \n \n")
+                    price_house = self.game_board.cases()[
+                        property_player[id_property - 1].id()].price_houses()
+                    former_nb_houses = self.game_board.cases()[
+                        property_player[id_property - 1].id()].nb_houses()
+                    self.game_board.cases()[property_player[id_property - 1].id()].set_nb_houses(
+                        former_nb_houses - 1)
+                    player.set_money(player.money() + price_house)
+                    current_line = self.term.print_line(" You earned " + str(price_house) + "k€", current_line)
+            elif (output == "B"):
+                current_line = self.term.print_line("Which property ? Enter the id diplayed above :", current_line)
+                def f(input):
+                    for i in range(1, len(property_player)):
+                        if input == str(i):
+                            return True
+                    return False
+                id_property = self.term.print_input(current_line, f)
+                current_line +=1
+                self.game_board.sell_property(player, property_player[id_property - 1].id())
 
         if (player.money() < 0):
             print(" \n \n You've lost the game \n \n")
@@ -542,6 +554,7 @@ class Game_graph:
         print("\n \n This is the end of your turn \n \n")
         print("\n Press enter to continue \n \n")
         answer = input("")
+
         return None
 
     def end_game(self, debug: bool):
