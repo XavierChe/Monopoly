@@ -46,8 +46,9 @@ class Property(Case):
     _price_houses: int
     #Prix à payer si pas proprio
     _rent: list
+    color
 
-    def __init__(self,name="#",id=0, monopole_id=0, value=0,owner=0,nb_houses=0,price_houses=0,rent=[0]*6, color =(50,50,50)):
+    def __init__(self,name="#",id=0, monopole_id=0, value=0,owner=0,nb_houses=0,price_houses=0,rent=[0]*6, color = (50,50,50)):
         super().__init__("Property",id)
         self._name = name.replace("_"," ")
         self._monopole_id = monopole_id
