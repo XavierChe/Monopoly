@@ -123,21 +123,21 @@ class Board:
                 nb_house += 1
         return nb_house
 
-    def sell_property(self, player, id_property):
+    def sell_property(self, player, id_property, print_instruction):
         """vend la propriete d'id id_property du joueur player"""
         if (self.cases()[id_property].type == "Property"):
             if (self.houses_on_monopole(id_property) > 0):
-                print(" \n \n You have to sell all the houses of the monopole before selling this property \n \n")
+                print_instruction("You have to sell all the houses of the monopole before selling this property", None, None)
             else:
                 self.cases()[id_property].set_owner(0)
                 value = self.cases()[id_property].value()
                 player.set_money(player.money() + value)
-                print(" \n \n You earned ", value, "€ \n \n")
+                print_instruction("You earned " + str(value) + "€", None, None)
         else:
             self.cases()[id_property].set_owner(0)
             value = self.cases()[id_property].value()
             player.set_money(player.money() + value)
-            print(" \n \n You earned ", value, "€ \n \n")
+            print_instruction("You earned " + str(value) + "€", None, None)
 
 class Game:
     def __init__(self, debug):
@@ -358,6 +358,7 @@ class Game:
         return exit_var
     
     def run(self):
+        """fait les tours successifs de joueurs, tant qu'il reste des joueurs dans le jeu"""
         if self.playing_status:
             self.id_current_player = random.randint(1, self.nb_player)
             while(self.nb_player_in_game > 1):
@@ -385,46 +386,38 @@ class Game:
         self.game_board.cases()[id_property_seller].set_owner(id_buyer)
         self.game_board.transaction(self.players[id_buyer], self.players[id_seller], value_exchange)
 
-    def display_properties(self,property_player):
-        for i in range(1,len(property_player)+1):
-            if (property_player[i-1].type()=="Property"):
-                nb_houses = property_player[i - 1].nb_houses()
-                if (nb_houses < 5):
-                    print(" ", i, " - ", property_player[i - 1].name(), " - Number of houses : ",
-                          nb_houses, "\n")
-                else:
-                    print(" ", i, " - ", property_player[i - 1].name(), " - Number of hotel : ",
-                          1, "\n")
-            else:
-                print(" ", i, " - ", property_player[i - 1].name(), "\n")
-
     def print_player_info(self, player, main_player):
+        """affiche les informations d'un joueur player, sur le panel de gauche si main_player = True, sur le panel de droite sinon"""
         if main_player:
             self.main_screen.blit(text_format("It's " + player.name() + "'s turn!", 20, black), (23*self.width//40, self.height//20))
-            self.main_screen.blit(text_format(player.name() + "'s bank account : " + str(player.money()) + " €", 13, black),(23*self.width//40, self.height//10))
-        
+        else:
+            self.main_screen.blit(text_format(player.name() + "'s recap:", 20, black), (80*self.width//100, self.height//20))
+
+        self.main_screen.blit(text_format(player.name() + "'s bank account : " + str(player.money()) + " €", 13, black), (23*self.width//40 + (1-main_player)*22*self.width//100, self.height//10))
         property_player = self.game_board.list_property(player)        
         if len(property_player) > 0:
-            self.main_screen.blit(text_format(player.name() + "'s properties :", 13, black), (23*self.width//40 + (1-main_player)*self.width//4, self.height//10 + 12))
+            self.main_screen.blit(text_format(player.name() + "'s properties :", 13, black), (23*self.width//40 + (1-main_player)*22*self.width//100, self.height//10 + 12))
         
         for i in range(1,len(property_player)+1):
             if (property_player[i-1].type()=="Property"):
                 nb_houses = property_player[i - 1].nb_houses()
                 if (nb_houses < 5):
-                    self.main_screen.blit(text_format(" " + str(i) + " - " + property_player[i - 1].name() + " - Number of houses : " + str(nb_houses), 13, black), (23*self.width//40 + (1-main_player)*self.width//4, self.height//10 + (i+1)*12))
+                    self.main_screen.blit(text_format(" " + str(i) + " - " + property_player[i - 1].name() + " - Number of houses : " + str(nb_houses), 13, black), (23*self.width//40 + (1-main_player)*22*self.width//100, self.height//10 + (i+1)*12))
                 else:
-                    self.main_screen.blit(text_format(" " + str(i) + " - " + property_player[i - 1].name() + " - Number of hotels : 1", 13, black), (23*self.width//40 + (1-main_player)*self.width//4, self.height//10 + (i+1)*12))
+                    self.main_screen.blit(text_format(" " + str(i) + " - " + property_player[i - 1].name() + " - Number of hotels : 1", 13, black), (23*self.width//40 + (1-main_player)*22*self.width//100, self.height//10 + (i+1)*12))
             else:
-                self.main_screen.blit(text_format(" " + str(i) + " - " + property_player[i - 1].name(), 13, black),  (23*self.width//40 + (1-main_player)*self.width//4, self.height//10 + (i+1)*12))
+                self.main_screen.blit(text_format(" " + str(i) + " - " + property_player[i - 1].name(), 13, black),  (23*self.width//40 + (1-main_player)*22*self.width//100, self.height//10 + (i+1)*12))
 
         pygame.display.update()
 
     def clear_bottom_panel(self):
+        """efface le panel d'affichage du bas"""
         clear_rectangle = pygame.Rect(23*self.width//40, 75*self.height//100, 17*self.width//40, 25*self.height//100)
         pygame.draw.rect(self.main_screen, pygame.Color("white"), clear_rectangle)
     
     def clear_right_panel(self):
-        clear_rectangle = pygame.Rect(33*self.width//40, 0, 17*self.width//40, 75*self.height//100)
+        """efface le panel d'affichage de droite"""
+        clear_rectangle = pygame.Rect(80*self.width//40, 0, 20*self.width//100, 75*self.height//100)
         pygame.draw.rect(self.main_screen, pygame.Color("white"), clear_rectangle)
 
     def print_instruction(self, instruction_1, instruction_2, yes_no_choice):
@@ -488,6 +481,7 @@ class Game:
                         return False
 
     def enter_response(self, text):
+        """pose une question au joueur et attend une réponse écrite"""
         if text != None:
             self.clear_bottom_panel()
             instruction_text = text_format(text, 13, black)
@@ -499,6 +493,7 @@ class Game:
         return response
 
     def player_choice_menu(self):
+        """c'est le menu de choix du joueur à la fin de son tour s'il a des propriétés"""
         self.clear_bottom_panel()
 
         choice_text = text_format("Select the action you want to make :", 13, black)
@@ -558,14 +553,14 @@ class Game:
             else:
                 answer = self.print_instruction("You are imprisonned. Do you want to roll the dices to try to exit the prison this round ?", None, ["yes","no"])
                 if answer == "no":
-                    b = self.game_board.cases()[player.position()].rounds_passed(player)
+                    b = self.game_board.cases()[player.position()].rounds_passed(player, self.print_instruction)
                 elif answer == "yes":
                     self.print_instruction("Press Enter to roll the dices", None, None)
                     dice_1 = random.randint(1, 6)
                     dice_2 = random.randint(1, 6)
                     self.print_instruction(" You've got " + str(dice_1) + " and " + str(dice_2), None, None)
 
-                    b = self.game_board.cases()[player.position()].trying_to_escape_prison(dice_1, dice_2, player)
+                    b = self.game_board.cases()[player.position()].trying_to_escape_prison(dice_1, dice_2, player, self.print_instruction)
 
         ## Cas possibilité d'avancer ##
         if b:
@@ -613,7 +608,7 @@ class Game:
             ## Cas Chance ##
             elif (self.game_board.cases()[player.position()].type() == "Luck"):
                 self.print_instruction("You're now on a Chance square !", None, None)
-                self.game_board.cases()[player.position()].action(player)
+                self.game_board.cases()[player.position()].action(player, self.print_instruction)
 
             ## Cas Taxes ##
             elif (self.game_board.cases()[player.position()].type() == "Taxes"):
@@ -684,7 +679,7 @@ class Game:
                 if (id_property < 1 or id_property > len(property_player)):
                     self.print_instruction("The number you entered is invalid", None, None)
                 else:
-                    self.game_board.sell_property(player, property_player[id_property - 1].id())
+                    self.game_board.sell_property(player, property_player[id_property - 1].id(), self.print_instruction)
 
         if(player.money() < 0):
             self.print_instruction("You just lost the game!", None, None)
@@ -693,10 +688,10 @@ class Game:
             ## Actions joueur ##
             answer = int(self.player_choice_menu())
             while answer != 6:
+                self.game_board.cases()[player.position()].show_case(self.height/2 - 150, self.height/2 - 170, self.main_screen)
                 ## Affichage informations ##
                 if (answer == 1):
-                    self.display_properties(property_player)
-                    id_property = int(self.enter_response("On which property would you like to have information ?"))
+                    id_property = int(self.enter_response("On which property would you like to have information ? Enter the number in the recap above :"))
                     if (id_property < 1 or id_property > len(property_player) or property_player[id_property - 1].type() != "Property"):
                         self.print_instruction("The number you have entered is invalid", None, None)
                     else:
@@ -772,6 +767,7 @@ class Game:
                                         self.print_instruction("The number you entered is invalid", None, None)
                                     else:
                                         seller_properties[id_property - 1].show_case(self.height/2 - 150, self.height/2 - 170, self.main_screen)
+
                 elif answer == 5:
                     player_name = self.enter_response("Write the name of the player to whom you want to make an offer :")
                     id_seller = self.find_player(player_name)
