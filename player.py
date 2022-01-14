@@ -12,6 +12,7 @@ pion3_width, pion3_height = pion3.get_size()
 pion4 = pygame.image.load('pictures/PION4.png')
 pion4_width, pion4_height = pion4.get_size()
 
+
 class Player:
     _id : int
     _money : int

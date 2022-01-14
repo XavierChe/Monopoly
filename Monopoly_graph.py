@@ -29,8 +29,8 @@ def read_properties(file):
         split_lines.append(lines[i].split(" "))  # On découpe les lignes du fichier (pour séparer les attributs) pour pouvoir définir les différentes propriétés
         for j in range(1, 7):
             split_lines[len(split_lines) - 1][j] = int(split_lines[len(split_lines) - 1][j])  # Conversion en entiers des champs qui doivent être entiers (prix de la propriété, ...)
-        split_lines[len(split_lines) - 1][7] = [int(split_lines[len(split_lines) - 1][i]) for i in range(7, 13)]  # Création de la liste des différents loyers
-        split_lines[len(split_lines) - 1][8] = tuple(map(int, split_lines[len(split_lines) - 1][8].split(",")))
+        split_lines[len(split_lines) - 1][7] = [int(split_lines[len(split_lines) - 1][i]) for i in range(7, 13)]  # Création de la liste des différents loyers        
+        split_lines[len(split_lines) - 1][8] = tuple(map(int, split_lines[len(split_lines) - 1][13].split(","))) # Création d'un tuple qui correspond à la couleur de la propriété
     for i in range(len(split_lines)):
         list_properties.append(Property(*split_lines[i][:9]))  # Initialisation de chaque propriété avec les informations données dans le fichier
     return list_properties
@@ -138,7 +138,6 @@ class Board:
             value = self.cases()[id_property].value()
             player.set_money(player.money() + value)
             print(" \n \n You earned ", value, "€ \n \n")
-
 
 class Game:
     def __init__(self, debug):
@@ -402,21 +401,21 @@ class Game:
     def print_player_info(self, player, main_player):
         if main_player:
             self.main_screen.blit(text_format("It's " + player.name() + "'s turn!", 20, black), (23*self.width//40, self.height//20))
-            self.main_screen.blit(text_format(player.name() + "'s bank account : " + str(player.money()) + " €", 10, black),(23*self.width//40, self.height//10))
+            self.main_screen.blit(text_format(player.name() + "'s bank account : " + str(player.money()) + " €", 13, black),(23*self.width//40, self.height//10))
         
         property_player = self.game_board.list_property(player)        
         if len(property_player) > 0:
-            self.main_screen.blit(text_format(player.name() + "'s properties :", 10, black), (23*self.width//40 + (1-main_player)*self.width//4, self.height//10 + 12))
+            self.main_screen.blit(text_format(player.name() + "'s properties :", 13, black), (23*self.width//40 + (1-main_player)*self.width//4, self.height//10 + 12))
         
         for i in range(1,len(property_player)+1):
             if (property_player[i-1].type()=="Property"):
                 nb_houses = property_player[i - 1].nb_houses()
                 if (nb_houses < 5):
-                    self.main_screen.blit(text_format(" " + str(i) + " - " + property_player[i - 1].name() + " - Number of houses : " + str(nb_houses), 10, black), (23*self.width//40 + (1-main_player)*self.width//4, self.height//10 + (i+1)*12))
+                    self.main_screen.blit(text_format(" " + str(i) + " - " + property_player[i - 1].name() + " - Number of houses : " + str(nb_houses), 13, black), (23*self.width//40 + (1-main_player)*self.width//4, self.height//10 + (i+1)*12))
                 else:
-                    self.main_screen.blit(text_format(" " + str(i) + " - " + property_player[i - 1].name() + " - Number of hotels : 1", 10, black), (23*self.width//40 + (1-main_player)*self.width//4, self.height//10 + (i+1)*12))
+                    self.main_screen.blit(text_format(" " + str(i) + " - " + property_player[i - 1].name() + " - Number of hotels : 1", 13, black), (23*self.width//40 + (1-main_player)*self.width//4, self.height//10 + (i+1)*12))
             else:
-                self.main_screen.blit(text_format(" " + str(i) + " - " + property_player[i - 1].name(), 10, black),  (23*self.width//40 + (1-main_player)*self.width//4, self.height//10 + (i+1)*12))
+                self.main_screen.blit(text_format(" " + str(i) + " - " + property_player[i - 1].name(), 13, black),  (23*self.width//40 + (1-main_player)*self.width//4, self.height//10 + (i+1)*12))
 
         pygame.display.update()
 
@@ -431,11 +430,11 @@ class Game:
     def print_instruction(self, instruction_1, instruction_2, yes_no_choice):
         """affiche des instructions pour le joueur, éventuellement un choix, en bas de l'écran à droite, on rend ensuite la réponse du joueur, 0 si pas de choix, -1 si quitte"""
         self.clear_bottom_panel()
-        text_instruction_1 = text_format(instruction_1, 10, black)
+        text_instruction_1 = text_format(instruction_1, 13, black)
         self.main_screen.blit(text_instruction_1, (23*self.width//40, 75*self.height//100))
 
         if instruction_2 != None:
-            text_instruction_2 = text_format(instruction_2, 10, black)
+            text_instruction_2 = text_format(instruction_2, 13, black)
             self.main_screen.blit(text_instruction_2, (23*self.width//40, 77*self.height//100))
         pygame.display.update()
 
@@ -460,11 +459,11 @@ class Game:
                             chosing = False 
                             response = -1
             if selection_cursor == 0:
-                choice0 = text_format(yes_no_choice[0], 10, red)
-                choice1 = text_format(yes_no_choice[1], 10, black)
+                choice0 = text_format(yes_no_choice[0], 13, red)
+                choice1 = text_format(yes_no_choice[1], 13, black)
             if selection_cursor == 1:
-                choice0 = text_format(yes_no_choice[0], 10, black)
-                choice1 = text_format(yes_no_choice[1], 10, red)
+                choice0 = text_format(yes_no_choice[0], 13, black)
+                choice1 = text_format(yes_no_choice[1], 13, red)
 
             self.main_screen.blit(choice0, (23*self.width//40, 77*self.height//100))
             self.main_screen.blit(choice1, (27*self.width//40, 77*self.height//100))
@@ -491,7 +490,7 @@ class Game:
     def enter_response(self, text):
         if text != None:
             self.clear_bottom_panel()
-            instruction_text = text_format(text, 10, black)
+            instruction_text = text_format(text, 13, black)
             self.main_screen.blit(instruction_text, (23*self.width//40, 75*self.height/100))
         response_text = input.Text_input_box(200,40,23*self.width//40, 89*self.height/100, screen=self.main_screen)
         response = ""
@@ -502,19 +501,19 @@ class Game:
     def player_choice_menu(self):
         self.clear_bottom_panel()
 
-        choice_text = text_format("Select the action you want to make :", 10, black)
+        choice_text = text_format("Select the action you want to make :", 13, black)
         self.main_screen.blit(choice_text, (23*self.width//40, 75*self.height//100))
-        choice_text = text_format("1 - Display information about one of your properties (Does not work for train stations or companies)", 10, black)
+        choice_text = text_format("1 - Display information about one of your properties (Does not work for train stations or companies)", 13, black)
         self.main_screen.blit(choice_text, (23*self.width//40, 77*self.height//100))
-        choice_text = text_format("2 - Build a house", 10, black)
+        choice_text = text_format("2 - Build a house", 13, black)
         self.main_screen.blit(choice_text, (23*self.width//40, 79*self.height//100))
-        choice_text = text_format("3 - Sell a house", 10, black)
+        choice_text = text_format("3 - Sell a house", 13, black)
         self.main_screen.blit(choice_text, (23*self.width//40, 81*self.height//100))
-        choice_text = text_format("4 - Display information about the properties of another player", 10, black)
+        choice_text = text_format("4 - Display information about the properties of another player", 13, black)
         self.main_screen.blit(choice_text, (23*self.width//40, 83*self.height//100))
-        choice_text = text_format("5 - Make an offer to another player", 10, black)
+        choice_text = text_format("5 - Make an offer to another player", 13, black)
         self.main_screen.blit(choice_text, (23*self.width//40, 85*self.height//100))
-        choice_text = text_format("6 - End your turn", 10, black)
+        choice_text = text_format("6 - End your turn", 13, black)
         self.main_screen.blit(choice_text, (23*self.width//40, 87*self.height//100))
         
         pygame.display.update()
@@ -565,10 +564,10 @@ class Game:
                     dice_1 = random.randint(1, 6)
                     dice_2 = random.randint(1, 6)
                     self.print_instruction(" You've got " + str(dice_1) + " and " + str(dice_2), None, None)
+
                     b = self.game_board.cases()[player.position()].trying_to_escape_prison(dice_1, dice_2, player)
 
         ## Cas possibilité d'avancer ##
-
         if b:
             self.print_instruction("Press Enter to roll the dices", None, None)
             if (self.debug):
@@ -613,7 +612,7 @@ class Game:
 
             ## Cas Chance ##
             elif (self.game_board.cases()[player.position()].type() == "Luck"):
-                self.print_instruction("You're now on a Luck square !", None, None)
+                self.print_instruction("You're now on a Chance square !", None, None)
                 self.game_board.cases()[player.position()].action(player)
 
             ## Cas Taxes ##
@@ -628,15 +627,15 @@ class Game:
                     welcome_text += "Welcome Home !!!"
                 elif self.game_board.is_owned(player.position()) is not None:
                     id_of_owner = self.game_board.is_owned(player.position())
-                    welcome_text += "You must pay a tax to player " + str(id_of_owner)
+                    welcome_text += " You must pay a tax to player " + str(id_of_owner) + "!"
 
                     ## Cas Compagnie ##
                     if (self.game_board.cases()[player.position()].type() == "Company"):
                         if (self.game_board.is_owned(12) == self.game_board.is_owned(28)):
-                            self.print_instruction(welcome_text, "The rent is 10 times the sum of the value on the dices", None)
+                            self.print_instruction(welcome_text, "The rent is 10 times the sum of the value on the dices.", None)
                             self.game_board.transaction(player, self.players[id_of_owner], 10 * dice_result)
                         else:
-                            self.print_instruction(welcome_text, "The rent is 4 times the sum of the value on the dices", None)
+                            self.print_instruction(welcome_text, "The rent is 4 times the sum of the value on the dices.", None)
                             self.game_board.transaction(player, self.players[id_of_owner], 4 * dice_result)
 
                     ## Cas Gare ##
@@ -653,16 +652,17 @@ class Game:
                         self.print_instruction(welcome_text, "It costs " + str(self.game_board.cases()[player.position()].rent()) + "€", None)
                         self.game_board.transaction(player, self.players[id_of_owner], self.game_board.cases()[player.position()].rent())
                 else:
-                    welcome_text += "Free Space ! It costs " + str(self.game_board.cases()[player.position()].value()) + "€"
+                    welcome_text += ". Free Space ! It costs " + str(self.game_board.cases()[player.position()].value()) + "€"
                     if (self.game_board.cases()[player.position()].value() > player.money()):
                         self.print_instruction(welcome_text, "You don't have enough money to buy the property.", None)
                     else:
-                        welcome_text += "Do you want to buy it ?"
+                        welcome_text += ". Do you want to buy it ?"
                         answer = self.print_instruction(welcome_text, None, ["yes","no"])
                         if answer == "yes":
                             self.game_board.buy_property(player)
                         else:
                             pass
+
 
         while (player.money() < 0 and len(property_player) > 0):
             answer = self.print_instruction("You don't have enough money. Would you like to sell a house or a property?", None, ["house","property"])
@@ -810,7 +810,6 @@ class Game:
                                             self.print_instruction("You entered an incorrect answer", None, None)
                 else:
                     self.print_instruction("You entered an incorrect answer", None, None)
-
                 if answer != 6:
                     answer = int(self.player_choice_menu())
 

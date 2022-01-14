@@ -46,7 +46,6 @@ class Property(Case):
     _price_houses: int
     #Prix à payer si pas proprio
     _rent: list
-    color
 
     def __init__(self,name="#",id=0, monopole_id=0, value=0,owner=0,nb_houses=0,price_houses=0,rent=[0]*6, color = (50,50,50)):
         super().__init__("Property",id)
@@ -101,6 +100,7 @@ class Property(Case):
     def show_case(self, x_init, y_init,screen):
         pygame.draw.rect(screen, white, pygame.Rect(x_init, y_init, 300, 340))
         pygame.draw.rect(screen, black, pygame.Rect(x_init + 5, y_init + 5 , 290, 330), 4)
+        print(self.color)
         pygame.draw.rect(screen, self.color, pygame.Rect(x_init + 10, y_init + 10, 280, 70))
 
         if self.nb_houses() >= 1 and self.nb_houses() != 5:
