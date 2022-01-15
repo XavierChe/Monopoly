@@ -258,7 +258,7 @@ class Prison(Case):
             print_instruction(" You can exit the prison ! But you have to pay 50€.", None, None)
             return self.exit_prison(player)
         else:
-            return self.rounds_passed(player)
+            return self.rounds_passed(player, print_instruction)
 
     def show_case(self, x_init, y_init, screen):
         pygame.draw.rect(screen, white, pygame.Rect(x_init, y_init, 300, 340))
