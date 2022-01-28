@@ -1,10 +1,10 @@
 from player import Player
 import random
-import pygame
-import pygame.locals as pl
+#import pygame
+#2import pygame.locals as pl
 from color import *
 
-pygame.init()
+#pygame.init()
 
 
 def text_format(message, textSize, textColor):

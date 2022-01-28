@@ -85,7 +85,7 @@ class Board:
             return None
         else:
             return potential_owner
-        
+
     def ids_same_monopole(self, id_mono):
         ids = []
         for i in range(len(self.cases())):
@@ -115,8 +115,9 @@ class Board:
         return nb_house
 
     def sell_property(self,player: Player, id_property):
-        if (self.cases()[id_property].type=="Property"):
-            if(self.houses_on_monopole(id_property)>0):
+        if (self.cases()[id_property].type()=="Property"):
+            nb_houses_on_monopole=self.houses_on_monopole(id_property)
+            if(nb_houses_on_monopole>0):
                 print(" \n \n You have to sell all the houses of the monopole before selling this property \n \n")
             else:
                 self.cases()[id_property].set_owner(0)
@@ -142,14 +143,22 @@ class Game:
                 print(" Write the name of the player created : \n ")
                 player_name = input("")
                 self.players.append(Player(i, player_name))
+            #self.players[2].set_money(1)
             self.game_board = Board(False)
         else:
             aff.clear_console()
             self.players = [0]
+            list_names=[]
             for i in range (1,nb_players+1):
                 print("\n \n Write the name of the player created : \n ")
-                player_name=input("")
-                self.players.append(Player(i,player_name))
+                player_name = input("")
+                while(player_name in list_names):
+                    print("Two players can't have the same name.")
+                    print("Write another name : \n ")
+                    player_name = input("")
+                self.players.append(Player(i, player_name))
+                list_names.append(player_name)
+
             self.game_board = Board(False)
 
     def test_game(self):
@@ -212,6 +221,33 @@ class Game:
         print(aff.monopoly_char)
         print("\n \n \n \n")
         print(" Time for ", player.name(), "to play !!! \n\n")
+
+        ## Debug de la condition d'arrêt ##
+        if (self.debug):
+            id_1_pr=self.players[1].position()
+            id_2_pr=self.players[2].position()
+            self.players[2].set_position(1)
+            self.game_board.buy_property(self.players[2])
+            #self.players[1].set_position(1)
+            #self.game_board.buy_property(self.players[1])
+            self.players[1].set_position(3)
+            self.game_board.buy_property(self.players[1])
+            self.players[1].set_position(12)
+            self.game_board.buy_property(self.players[1])
+            self.players[1].set_position(5)
+            self.game_board.buy_property(self.players[1])
+            self.players[2].set_position(28)
+            self.game_board.buy_property(self.players[2])
+            self.players[2].set_position(15)
+            self.game_board.buy_property(self.players[2])
+            #self.game_board.cases()[1].set_nb_houses(1)
+            #self.game_board.cases()[3].set_nb_houses(1)
+            #self.players[1].set_money(-200)
+            self.players[1].set_position(id_1_pr)
+            self.players[2].set_position(id_2_pr)
+
+        ## Affichage des informations du joueur ##
+
         print("██████████████████████████████████████████")
         print("\n Your Bank account : ", player.money(), " € \n \n")
         print(" Properties : \n")
@@ -220,21 +256,26 @@ class Game:
         print("██████████████████████████████████████████")
         ## b est un booléen pour déterminer si le joueur peut lancer les dés pour avancer
         b=True
-        ## Cas Prison ##
 
+        ## Cas Prison ##
         if (player.free()==False):
+            ## Cas joueur possédant une carte pour sortir de la prison ##
             if (player.escape_card()>0):
                 print(" You have an escape card, you can leave the prison for free. \n")
                 player.set_free(True)
                 player.set_escape_card(player.escape_card()-1)
+
             else :
                 print("You are imprisonned. \n Do you want to roll the dices to try to exit the prison this round ? \n")
                 print("A- Yes \n \nB- No \n \n ")
                 answer = ""
+                ## Possibilité de lancer les dés pour s'échapper de la prison ##
                 while (answer != "A" and answer != "B"):
                     answer = input("")
                 if answer == "B":
                     b = self.game_board.cases()[player.position()].rounds_passed(player)
+
+                ## Sinon, après 3 tours passés en prison le joueur peut sortir ##
                 else:
                     print("\n Press enter to role the dices \n \n")
                     answer = input("")
@@ -291,10 +332,12 @@ class Game:
             ## Cas Taxes ##
             elif (self.game_board.cases()[player.position()].type() == "Taxes"):
                 print(" You're now on - ", self.game_board.cases()[player.position()].type(), " - \n \n")
-                print(" Oh nooooo, you have to pay taxes... It costs ", self.game_board.cases()[player.position()].value(), "€")
+                print(" Oh no, you have to pay taxes... It costs ", self.game_board.cases()[player.position()].value(), "€")
                 self.game_board.cases()[player.position()].pay(player)
 
             ## Cas Compagnies, Gares et Propriétés ##
+            ## Ici un "if" et non un "else" pour prendre en compte le cas où une carte chance déplace le joueur sur
+            ## une case achetable.
             if (self.game_board.cases()[player.position()].type() in ["Company","Train Station","Property"]):
                 print(" You're now on - ", self.game_board.cases()[player.position()].name(), " - \n \n")
                 if (self.game_board.is_owned(player.position()) == player.id()):
@@ -346,7 +389,7 @@ class Game:
                             pass
 
         while(player.money()<0 and len(property_player)>0):
-            print("\n \n You don't have enough money, you have to sell some houses or some properties. \n \n Here are your properties : \n \n")
+            print("\n \n Your have ", player.money(),"€, you have to sell some houses or some properties. \n \n Here are your properties : \n \n")
             self.display_properties(property_player)
             print("\n \n Do you want to sell a house or a property to the bank ? \n \n A - House \n \n B - Property \n \n")
             answer=input("")
@@ -377,6 +420,7 @@ class Game:
                     self.game_board.sell_property(player,property_player[id_property-1].id())
             else:
                 print("\n \n The answer you entered is incorrect. \n \n")
+            property_player=self.game_board.list_property(player)
 
         if(player.money()<0):
             print(" \n \n You've lost the game \n \n")
@@ -510,12 +554,16 @@ class Game:
                                         print("\n The number you entered is invalid")
                                     else:
                                         seller_properties[id_property - 1].print_information()
+
+                ## Échange de propriétés ##
                 elif (answer == 5):
                     print("\n Write the name of the player to whome you want to make an offer : \n \n")
                     player_name = input("")
                     id_seller = self.find_player(player_name)
                     if (id_seller == 0):
                         print("\n The player you entered does not exist. \n \n")
+                    elif (player_name == player.name()):
+                        print("\n You can't make an offer to yourself... \n \n")
                     else:
                         seller_properties = self.game_board.list_property(self.players[id_seller])
                         if (len(seller_properties) == 0):
@@ -527,7 +575,7 @@ class Game:
                             id_seller_property = int(input(""))
                             if (id_seller_property < 1 or id_seller_property > len(seller_properties)):
                                 print("\n The number you entered is invalid")
-                            elif (self.game_board.houses_on_monopole(
+                            elif (seller_properties[id_seller_property - 1].type()=="Property" and self.game_board.houses_on_monopole(
                                     seller_properties[id_seller_property - 1].id()) > 0):
                                 print("\n \n You can't buy a house in a monopole where some houses are built \n \n")
                             else:
@@ -537,8 +585,8 @@ class Game:
                                 id_buyer_property = int(input(""))
                                 if (id_buyer_property < 1 or id_buyer_property > len(property_player)):
                                     print("\n The number you entered is invalid \n \n")
-                                elif (self.game_board.houses_on_monopole(
-                                        property_player[id_seller_property - 1].id()) > 0):
+                                elif (property_player[id_buyer_property - 1].type() == "Property" and self.game_board.houses_on_monopole(
+                                        property_player[id_buyer_property - 1].id()) > 0):
                                     print(
                                         "\n \n You can't sell a house in a monopole where some houses are built \n \n")
                                 else:
@@ -546,6 +594,8 @@ class Game:
                                     price_offer = int(input(""))
                                     if (player.money() < price_offer):
                                         print(" \n \n You don't have enough money to make such an offer \n \n")
+                                    elif (self.players[id_seller].money()<-price_offer):
+                                        print(" \n \n ",self.players[id_seller].name() , " doesn't have enough money to accept such an offer \n \n")
                                     else:
                                         print(
                                             "\n \n ", self.players[id_seller].name(),
@@ -589,7 +639,7 @@ if __name__ == '__main__':
         print("\n \n You have to enter a number higher than 1 \n \n")
         print("\n \n Choose the number of players \n \n")
         nb_players = int(input(""))
-    new_game = Game(True,nb_players)
+    new_game = Game(False,nb_players)
     nb_players_in_game=nb_players
     id_current_player = random.randint(1,nb_players)
     while (nb_players_in_game>1):
@@ -600,4 +650,8 @@ if __name__ == '__main__':
             if (new_game.players[id_current_player].money() < 0):
                 nb_players_in_game-=1
         id_current_player+=1
+    for i in range(1,len(new_game.players)) :
+        if (new_game.players[i].money()>0):
+            id_winner = i
     new_game.end_game(True)
+    print("Congratulations ", new_game.players[id_winner].name(),", you've just won the game !!!!")
